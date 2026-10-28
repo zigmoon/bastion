@@ -1,0 +1,12 @@
+# Local noise only. `dist/` is versioned on purpose: it holds the installable
+# archive, and `assets/icon-master.png` is the source of every raster icon.
+# Personal copies dropped at the root stay on this machine.
+/*.zip
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+node_modules/

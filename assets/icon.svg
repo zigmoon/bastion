@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Bastion">
+	<title>Bastion</title>
+	<!-- Rounded card: the near-white plate the mark sits on. -->
+	<rect x="0" y="0" width="512" height="512" rx="76" fill="#f7f8fa"/>
+
+	<!-- A battlemented wall: three merlons, two embrasures. -->
+	<path d="M138 400V200h50v44h42v-44h52v44h42v-44h50v200" fill="none" stroke="#0b0d10" stroke-width="32" stroke-linejoin="miter" stroke-linecap="square"/>
+
+	<!-- The ground line the wall stands on. -->
+	<path d="M112 400h288" fill="none" stroke="#0b0d10" stroke-width="32" stroke-linecap="square"/>
+
+	<!-- The gate: filled, so the mark still reads at 32 px. -->
+	<path d="M228 400v-58a28 28 0 0 1 56 0v58Z" fill="#0b0d10"/>
+</svg>

@@ -1,0 +1,814 @@
+/**
+ * Bastion — admin screen.
+ *
+ * Same Swiss system as the rest of the suite: white surface, hairline rules,
+ * 2 px corners, one accent, no shadow. Inter for text, Space Grotesk for
+ * headings, JetBrains Mono for micro-labels — all embedded, never fetched.
+ */
+
+@font-face {
+	font-family: 'Inter';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('../fonts/inter-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: 'Inter';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('../fonts/inter-latin-ext.woff2') format('woff2');
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+	font-family: 'Space Grotesk';
+	font-style: normal;
+	font-weight: 300 700;
+	font-display: swap;
+	src: url('../fonts/spacegrotesk-latin.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: normal;
+	font-weight: 100 800;
+	font-display: swap;
+	src: url('../fonts/jetbrainsmono-latin.woff2') format('woff2');
+}
+
+.bas-admin {
+	--bas-ink: #0b0d10;
+	--bas-ink-2: #454c58;
+	--bas-dim: #6e7683;
+	--bas-line: #e5e7eb;
+	--bas-line-soft: #eff1f4;
+	--bas-line-strong: #cfd4db;
+	--bas-surface: #ffffff;
+	--bas-surface-2: #fbfcfd;
+	--bas-ok: #0f7a53;
+	--bas-ok-soft: #eaf6f0;
+	--bas-danger: #b42318;
+	--bas-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+	--bas-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	--bas-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+	max-width: 1080px;
+	margin: 18px 20px 40px 2px;
+	color: var(--bas-ink);
+	font-family: var(--bas-sans);
+	font-size: 13.5px;
+	line-height: 1.55;
+	-webkit-font-smoothing: antialiased;
+}
+
+.bas-admin *,
+.bas-admin *::before,
+.bas-admin *::after {
+	box-sizing: border-box;
+}
+
+/* ── Head ───────────────────────────────────────────────────────────────── */
+
+.bas-admin-head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 24px;
+	padding-bottom: 18px;
+	border-bottom: 1px solid var(--bas-line);
+}
+
+.bas-brand {
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+}
+
+.bas-brand-mark {
+	flex: none;
+	margin-top: 3px;
+}
+
+.bas-brand-mark svg {
+	display: block;
+	border: 1px solid var(--bas-line);
+	border-radius: 4px;
+}
+
+.bas-admin-head h1 {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0;
+	padding: 0;
+	color: var(--bas-ink);
+	font-family: var(--bas-display);
+	font-size: 26px;
+	font-weight: 600;
+	letter-spacing: -0.015em;
+	line-height: 1.15;
+}
+
+.bas-state {
+	padding: 2px 7px;
+	border: 1px solid var(--bas-line-strong);
+	border-radius: 2px;
+	color: var(--bas-dim);
+	font-family: var(--bas-mono);
+	font-size: 9.5px;
+	font-weight: 500;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	vertical-align: middle;
+}
+
+.bas-state.is-on {
+	border-color: #bfe3d2;
+	background: var(--bas-ok-soft);
+	color: var(--bas-ok);
+}
+
+.bas-lead {
+	max-width: 62ch;
+	margin: 6px 0 0;
+	color: var(--bas-ink-2);
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+.bas-meta {
+	margin: 2px 0 0;
+	color: var(--bas-dim);
+	font-family: var(--bas-mono);
+	font-size: 10.5px;
+	letter-spacing: 0.04em;
+	white-space: nowrap;
+}
+
+/* ── Tabs ───────────────────────────────────────────────────────────────── */
+
+.bas-tabs {
+	display: none;
+	gap: 2px;
+	margin: 0;
+	padding: 0;
+	border-bottom: 1px solid var(--bas-line);
+}
+
+.bas-admin--js .bas-tabs {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.bas-tab {
+	margin: 0 0 -1px;
+	padding: 11px 15px;
+	border: 0;
+	border-bottom: 2px solid transparent;
+	border-radius: 0;
+	background: none;
+	color: var(--bas-dim);
+	font-family: var(--bas-sans);
+	font-size: 12.5px;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	cursor: pointer;
+}
+
+.bas-tab:hover {
+	color: var(--bas-ink);
+}
+
+.bas-tab[aria-selected="true"] {
+	border-bottom-color: var(--bas-ink);
+	color: var(--bas-ink);
+}
+
+.bas-tab:focus-visible {
+	outline: 2px solid var(--bas-ink);
+	outline-offset: -2px;
+}
+
+/* ── Panels ─────────────────────────────────────────────────────────────── */
+
+.bas-panel {
+	padding: 26px 28px 10px;
+	border: 1px solid var(--bas-line);
+	border-top: 0;
+	background: var(--bas-surface);
+}
+
+.bas-admin:not(.bas-admin--js) .bas-panel {
+	margin-top: 22px;
+	border-top: 1px solid var(--bas-line);
+}
+
+.bas-admin:not(.bas-admin--js) .bas-panel[hidden] {
+	display: block;
+}
+
+.bas-admin--js .bas-panel[hidden] {
+	display: none;
+}
+
+.bas-section {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 26px 0 4px;
+	font-family: var(--bas-display);
+	font-size: 15px;
+	font-weight: 600;
+	letter-spacing: -0.005em;
+	line-height: 1.3;
+	color: var(--bas-ink);
+}
+
+.bas-section::after {
+	content: "";
+	flex: 1;
+	height: 1px;
+	background: var(--bas-line);
+}
+
+.bas-panel > .bas-section:first-child {
+	margin-top: 0;
+}
+
+/* ── Switch ─────────────────────────────────────────────────────────────── */
+
+.bas-switch-field {
+	max-width: 660px;
+	margin: 16px 0;
+}
+
+.bas-switch-field label {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	color: var(--bas-ink);
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+/* A switch, not a box: same native input, so it submits and works without
+   JavaScript; only the rendering changes. */
+.bas-switch-field input[type="checkbox"] {
+	position: relative;
+	flex: none;
+	width: 42px;
+	height: 23px;
+	margin: 0;
+	padding: 0;
+	border: 1px solid var(--bas-line-strong);
+	border-radius: 999px;
+	background: #eceef2;
+	box-shadow: none;
+	-webkit-appearance: none;
+	appearance: none;
+	cursor: pointer;
+	transition: background 0.16s ease, border-color 0.16s ease;
+}
+
+.bas-switch-field input[type="checkbox"]::before {
+	content: "";
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 15px;
+	height: 15px;
+	margin: 0;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 1px 2px rgba(11, 13, 16, 0.3);
+	transition: transform 0.16s ease;
+}
+
+.bas-switch-field input[type="checkbox"]:checked {
+	border-color: var(--bas-ink);
+	background: var(--bas-ink);
+}
+
+.bas-switch-field input[type="checkbox"]:checked::before {
+	transform: translateX(19px);
+}
+
+.bas-switch-field input[type="checkbox"]:hover {
+	border-color: var(--bas-ink-2);
+}
+
+.bas-switch-field input[type="checkbox"]:focus {
+	border-color: var(--bas-ink);
+	box-shadow: 0 0 0 3px rgba(11, 13, 16, 0.12);
+	outline: 2px solid transparent;
+}
+
+.bas-switch-field input[type="checkbox"]:focus-visible {
+	outline: 2px solid var(--bas-ink);
+	outline-offset: 2px;
+}
+
+.bas-switch-field .bas-help {
+	margin-left: 54px;
+}
+
+/* ── Post type checkboxes ───────────────────────────────────────────────── */
+
+.bas-checks {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+	gap: 2px 24px;
+	margin: 12px 0 20px;
+}
+
+.bas-check {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	padding: 7px 0;
+	border-bottom: 1px solid var(--bas-line-soft);
+	color: var(--bas-ink);
+	font-size: 13px;
+	cursor: pointer;
+}
+
+.bas-check input[type="checkbox"] {
+	flex: none;
+	width: 16px;
+	height: 16px;
+	margin: 0;
+	border-color: var(--bas-line-strong);
+	border-radius: 2px;
+	accent-color: var(--bas-ink);
+	box-shadow: none;
+	cursor: pointer;
+}
+
+.bas-check code {
+	margin-left: auto;
+	color: var(--bas-dim);
+	font-family: var(--bas-mono);
+	font-size: 10px;
+	letter-spacing: 0.03em;
+}
+
+/* ── Fields ─────────────────────────────────────────────────────────────── */
+
+.bas-field {
+	max-width: 660px;
+	margin: 18px 0 20px;
+}
+
+.bas-field > label {
+	display: block;
+	margin-bottom: 7px;
+	color: var(--bas-ink);
+	font-family: var(--bas-mono);
+	font-size: 10.5px;
+	font-weight: 500;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+}
+
+.bas-field input[type="text"],
+.bas-field input[type="number"],
+.bas-field select {
+	width: 100%;
+	max-width: 420px;
+	margin: 0;
+	padding: 8px 10px;
+	border: 1px solid var(--bas-line-strong);
+	border-radius: 2px;
+	background: #fff;
+	color: var(--bas-ink);
+	font-family: var(--bas-sans);
+	font-size: 13.5px;
+	line-height: 1.5;
+	box-shadow: none;
+}
+
+.bas-field--narrow input[type="text"],
+.bas-field--narrow input[type="number"],
+.bas-field--narrow select {
+	max-width: 320px;
+}
+
+.bas-field input:hover,
+.bas-field select:hover {
+	border-color: var(--bas-ink-2);
+}
+
+.bas-field input:focus,
+.bas-field select:focus {
+	border-color: var(--bas-ink);
+	box-shadow: 0 0 0 3px rgba(11, 13, 16, 0.12);
+	outline: 2px solid transparent;
+}
+
+.bas-help {
+	max-width: 62ch;
+	margin: 8px 0 0;
+	color: var(--bas-dim);
+	font-size: 11.5px;
+	line-height: 1.5;
+}
+
+.bas-panel > .bas-help {
+	margin-bottom: 14px;
+}
+
+/* ── Note ───────────────────────────────────────────────────────────────── */
+
+.bas-note {
+	max-width: 660px;
+	margin: 22px 0 10px;
+	padding: 13px 15px;
+	border: 1px solid var(--bas-line);
+	border-left: 3px solid var(--bas-line-strong);
+	border-radius: 2px;
+	background: var(--bas-surface-2);
+}
+
+.bas-note strong {
+	display: block;
+	margin-bottom: 4px;
+	color: var(--bas-ink);
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+}
+
+.bas-note p {
+	margin: 0;
+	color: var(--bas-ink-2);
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+/* ── Save bar ───────────────────────────────────────────────────────────── */
+
+.bas-savebar {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-top: 22px;
+	padding-top: 16px;
+	border-top: 1px solid var(--bas-line);
+}
+
+.bas-savebar-hint {
+	color: var(--bas-dim);
+	font-size: 11.5px;
+}
+
+.bas-savebar .button-primary {
+	padding: 4px 18px;
+	border: 1px solid var(--bas-ink);
+	border-radius: 2px;
+	background: var(--bas-ink);
+	color: #fff;
+	font-family: var(--bas-sans);
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-shadow: none;
+	box-shadow: none;
+	text-transform: uppercase;
+	transition: opacity 0.14s ease;
+}
+
+.bas-savebar .button-primary:hover,
+.bas-savebar .button-primary:focus {
+	border-color: var(--bas-ink);
+	background: #1b2027;
+	color: #fff;
+	box-shadow: 0 0 0 3px rgba(11, 13, 16, 0.14);
+}
+
+/* ── Credits ────────────────────────────────────────────────────────────── */
+
+.bas-credits {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 6px 18px;
+	margin-top: 26px;
+	padding-top: 12px;
+	border-top: 1px solid var(--bas-line);
+}
+
+.bas-credits p {
+	margin: 0;
+	color: var(--bas-dim);
+	font-size: 11.5px;
+	line-height: 1.5;
+}
+
+.bas-credits-links {
+	font-family: var(--bas-mono);
+	font-size: 10.5px;
+	letter-spacing: 0.04em;
+}
+
+.bas-credits-links span {
+	margin: 0 4px;
+	color: var(--bas-line-strong);
+}
+
+.bas-admin a {
+	color: var(--bas-ink);
+	text-decoration: underline;
+	text-decoration-color: var(--bas-line-strong);
+	text-underline-offset: 2px;
+}
+
+.bas-admin a:hover,
+.bas-admin a:focus {
+	color: #0a66ff;
+	text-decoration-color: currentcolor;
+}
+
+/* ── Notices, outside .bas-admin ────────────────────────────────────────── */
+
+.bastion-welcome p {
+	margin: 0.5em 0;
+}
+
+.bastion-welcome-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+}
+
+.bastion-welcome-credit {
+	color: #50575e;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: 10.5px;
+	letter-spacing: 0.04em;
+}
+
+/* ── Editor submit box ──────────────────────────────────────────────────── */
+
+.bastion-action {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.bastion-action-hint {
+	color: #50575e;
+	font-size: 11px;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 782px) {
+	.bas-admin-head {
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.bas-admin-head h1 {
+		font-size: 21px;
+	}
+
+	.bas-brand-mark svg {
+		width: 30px;
+		height: 30px;
+	}
+
+	.bas-panel {
+		padding: 20px 16px 6px;
+	}
+
+	.bas-checks {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.bas-savebar {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 9px;
+	}
+
+	.bas-savebar .button-primary {
+		width: 100%;
+		text-align: center;
+	}
+
+	.bas-credits {
+		flex-direction: column;
+	}
+}
+
+@media (max-width: 600px) {
+	.bas-admin {
+		margin-right: 10px;
+	}
+
+	.bas-tabs {
+		gap: 0;
+	}
+
+	.bas-tab {
+		padding: 10px 9px;
+		font-size: 11px;
+	}
+
+	.bas-field input[type="text"],
+	.bas-field input[type="number"],
+	.bas-field select {
+		max-width: none;
+	}
+}
+
+/* ── Audit table ────────────────────────────────────────────────────────── */
+
+.bas-audit {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 4px;
+	font-size: 13px;
+}
+
+.bas-audit th {
+	padding: 0 12px 8px 0;
+	border-bottom: 1px solid var(--bas-line-strong);
+	color: var(--bas-dim);
+	font-family: var(--bas-mono);
+	font-size: 10.5px;
+	font-weight: 500;
+	letter-spacing: 0.07em;
+	text-align: left;
+	text-transform: uppercase;
+}
+
+.bas-audit td {
+	padding: 11px 12px 11px 0;
+	border-bottom: 1px solid var(--bas-line-soft);
+	vertical-align: top;
+}
+
+.bas-audit tr:last-child td {
+	border-bottom: 0;
+}
+
+.bas-audit-check {
+	width: 30%;
+	font-weight: 500;
+}
+
+.bas-audit-value {
+	width: 46%;
+	color: var(--bas-ink-2);
+}
+
+.bas-audit-value code,
+.bas-audit-value .bas-proof {
+	display: inline-block;
+	max-width: 100%;
+	padding: 2px 5px;
+	border: 1px solid var(--bas-line);
+	border-radius: 2px;
+	background: var(--bas-surface-2);
+	font-family: var(--bas-mono);
+	font-size: 11.5px;
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+}
+
+.bas-audit-fix {
+	width: 24%;
+	color: var(--bas-dim);
+}
+
+.bas-pill {
+	display: inline-block;
+	padding: 2px 7px;
+	border: 1px solid var(--bas-line-strong);
+	border-radius: 2px;
+	color: var(--bas-dim);
+	font-family: var(--bas-mono);
+	font-size: 10px;
+	font-weight: 500;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.bas-pill--pass {
+	border-color: #b7e0cd;
+	background: var(--bas-ok-soft);
+	color: var(--bas-ok);
+}
+
+.bas-pill--fail {
+	border-color: #f0c4bf;
+	background: #fdf1f0;
+	color: var(--bas-danger);
+}
+
+.bas-pill--warn {
+	border-color: #f0dcae;
+	background: #fdf8ec;
+	color: #8a5a00;
+}
+
+.bas-pill--info {
+	border-color: var(--bas-line-strong);
+	color: var(--bas-dim);
+}
+
+.bas-audit-summary {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px 22px;
+	align-items: baseline;
+	margin: 0 0 18px;
+	padding: 14px 0;
+	border-top: 1px solid var(--bas-line);
+	border-bottom: 1px solid var(--bas-line);
+}
+
+.bas-audit-summary strong {
+	font-family: var(--bas-display);
+	font-size: 20px;
+	font-weight: 600;
+	letter-spacing: -0.01em;
+}
+
+.bas-audit-summary span {
+	color: var(--bas-dim);
+	font-size: 12.5px;
+}
+
+.bas-record {
+	display: block;
+	margin: 6px 0 0;
+	padding: 10px 12px;
+	border: 1px solid var(--bas-line);
+	border-left: 2px solid var(--bas-ink);
+	border-radius: 2px;
+	background: var(--bas-surface-2);
+	font-family: var(--bas-mono);
+	font-size: 11.5px;
+	line-height: 1.6;
+	overflow-wrap: anywhere;
+	white-space: pre-wrap;
+}
+
+.bas-field--wide textarea {
+	width: 100%;
+	min-height: 74px;
+	padding: 8px 10px;
+	border: 1px solid var(--bas-line-strong);
+	border-radius: 2px;
+	background: var(--bas-surface);
+	color: var(--bas-ink);
+	font-family: var(--bas-mono);
+	font-size: 12px;
+	line-height: 1.6;
+	resize: vertical;
+}
+
+.bas-field--wide textarea:focus {
+	border-color: var(--bas-ink);
+	box-shadow: 0 0 0 1px var(--bas-ink);
+	outline: 0;
+}
+
+@media screen and (max-width: 782px) {
+	.bas-audit,
+	.bas-audit tbody,
+	.bas-audit tr,
+	.bas-audit td {
+		display: block;
+		width: 100%;
+	}
+
+	.bas-audit thead {
+		display: none;
+	}
+
+	.bas-audit tr {
+		padding: 12px 0;
+		border-bottom: 1px solid var(--bas-line-soft);
+	}
+
+	.bas-audit td {
+		padding: 2px 0;
+		border: 0;
+	}
+
+	.bas-audit-check {
+		font-weight: 600;
+	}
+}
