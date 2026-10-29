@@ -15,6 +15,7 @@ require_once BASTION_DIR . 'includes/class-https.php';
 require_once BASTION_DIR . 'includes/class-disclosure.php';
 require_once BASTION_DIR . 'includes/class-dns.php';
 require_once BASTION_DIR . 'includes/class-audit.php';
+require_once BASTION_DIR . 'includes/class-updater.php';
 
 use Bastion\Audit;
 use Bastion\Disclosure;
@@ -22,6 +23,7 @@ use Bastion\Dns;
 use Bastion\Headers;
 use Bastion\Https;
 use Bastion\Settings;
+use Bastion\Updater;
 
 /**
  * A settings object with the given values, in apply mode by default.
@@ -637,6 +639,58 @@ bas_same( array(), $logger->logs(), 'and can be emptied' );
 $quiet = bas_settings( array( 'log_enabled' => false ) );
 $quiet->log( 'should_not_appear' );
 bas_same( array(), $quiet->logs(), 'the log switch is honoured' );
+
+/* -------------------------------------------------------------------------
+ * The updater: what a live site is told, and what it is never told.
+ * ---------------------------------------------------------------------- */
+
+bas_same( '1.0.1', Updater::normalise_version( 'v1.0.1' ), 'a tag with a leading v reads as the same version' );
+bas_same( '2.3', Updater::normalise_version( 'release-2.3' ), 'digits are found wherever the tag puts them' );
+bas_same( '', Updater::normalise_version( 'nightly' ), 'a tag with no digits is not a version' );
+
+$assets = array(
+	array( 'name' => 'Bastion-1.1.0-projet-complet.zip', 'browser_download_url' => 'https://example.test/complete.zip' ),
+	array( 'name' => 'Bastion-1.1.0.zip', 'browser_download_url' => 'https://example.test/plugin.zip' ),
+	array( 'name' => 'Bastion-1.0.0.zip', 'browser_download_url' => 'https://example.test/old.zip' ),
+	array( 'name' => 'notes.txt', 'browser_download_url' => 'https://example.test/notes.txt' ),
+	array( 'name' => 'Other-1.1.0.zip', 'browser_download_url' => 'https://example.test/other.zip' ),
+);
+
+bas_same( 'https://example.test/plugin.zip', Updater::pick_asset( $assets, '1.1.0' ), 'the archive of the release wins, not the whole-repository one' );
+bas_same( 'https://example.test/plugin.zip', Updater::pick_asset( $assets ), 'and the first plugin archive is the fallback when no version is asked for' );
+bas_same( '', Updater::pick_asset( array( $assets[0] ), '1.1.0' ), 'a whole-repository archive alone is not installable' );
+bas_same( 'https://example.test/old.zip', Updater::pick_asset( array( $assets[0], $assets[2] ), '2.0.0' ), 'an older plugin archive is still usable as the fallback' );
+bas_same( '', Updater::pick_asset( array(), '1.1.0' ), 'no asset means no update' );
+
+$payload = array(
+	'tag_name'     => 'v1.1.0',
+	'html_url'     => 'https://github.com/zigmoon/bastion/releases/tag/v1.1.0',
+	'published_at' => '2026-10-29T00:00:00Z',
+	'body'         => "## [1.1.0] — 2026-10-29\n\nFixes found by re-reading the plugin.\n\n### Fixed\n\n- **The login screen** was not covered: `wp-login.php` never fires the hook.\n",
+	'assets'       => $assets,
+);
+
+$release = Updater::parse_release( $payload );
+
+bas_same( '1.1.0', $release['version'] ?? '', 'the release is read' );
+bas_same( 'https://example.test/plugin.zip', $release['package'] ?? '', 'with an installable package' );
+bas_same( 'Fixes found by re-reading the plugin.', $release['notice'] ?? '', 'the upgrade notice is the first prose line, not a heading' );
+
+$markup = $release['changelog'] ?? '';
+bas_assert( str_contains( $markup, '<h4>Fixed</h4>' ), 'a Markdown heading becomes a heading in the modal' );
+bas_assert( ! str_contains( $markup, '1.1.0 — 2026' ), 'the version heading is dropped: the modal already prints it' );
+bas_assert( str_contains( $markup, '<strong>The login screen</strong>' ), 'bold survives as bold' );
+bas_assert( str_contains( $markup, '<code>wp-login.php</code>' ), 'and inline code as code' );
+bas_assert( ! str_contains( $markup, '**' ) && ! str_contains( $markup, '`' ), 'no raw Markdown reaches the screen' );
+bas_assert( str_contains( $markup, '<ul><li>' ), 'a run of bullets becomes a list' );
+bas_assert( ! str_contains( $markup, '<script>' ), 'nothing is passed through unescaped' );
+
+bas_same( null, Updater::parse_release( array_merge( $payload, array( 'draft' => true ) ) ), 'a draft is never offered' );
+bas_same( null, Updater::parse_release( array_merge( $payload, array( 'prerelease' => true ) ) ), 'nor a pre-release' );
+bas_same( null, Updater::parse_release( array_merge( $payload, array( 'assets' => array() ) ) ), 'nor a release with nothing to install' );
+bas_same( null, Updater::parse_release( array( 'assets' => $assets ) ), 'and a payload without a tag is refused' );
+
+bas_same( '<p>&lt;img src=x onerror=alert(1)&gt;</p>', Updater::changelog_markup( '<img src=x onerror=alert(1)>' ), 'a release body is escaped, not rendered' );
 
 /* -------------------------------------------------------------------------
  * Report.

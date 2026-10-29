@@ -15,10 +15,18 @@ define( 'ABSPATH', __DIR__ . '/site/' );
 define( 'MINUTE_IN_SECONDS', 60 );
 define( 'HOUR_IN_SECONDS', 3600 );
 define( 'DAY_IN_SECONDS', 86400 );
-define( 'BASTION_VERSION', '1.0.0' );
+define( 'BASTION_DIR', dirname( __DIR__ ) . '/Bastion/' );
 define( 'BASTION_BASENAME', 'Bastion/bastion.php' );
 define( 'BASTION_URL', 'https://example.test/wp-content/plugins/Bastion/' );
-define( 'BASTION_DIR', dirname( __DIR__ ) . '/Bastion/' );
+
+/*
+ * Read the version from the plugin header, never a copy kept here: a test
+ * constant that drifts from the header lets a release ship under two versions
+ * at once, and every assertion about it still passes.
+ */
+preg_match( '/^[ \t\/*#@]*Version:\s*(\S+)/mi', (string) file_get_contents( BASTION_DIR . 'bastion.php' ), $bas_version );
+define( 'BASTION_VERSION', $bas_version[1] ?? '0.0.0' );
+unset( $bas_version );
 
 if ( ! is_dir( ABSPATH ) ) {
 	mkdir( ABSPATH, 0o777, true );

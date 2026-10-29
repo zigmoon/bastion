@@ -4,6 +4,17 @@ All notable changes to Bastion are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [semantic versioning](https://semver.org/).
 
+## [1.1.1] — 2026-10-29
+
+### Fixed
+
+- **The changelog in the "View details" modal was raw Markdown.** A release body is written in Markdown, and passing it through as text left `**asterisks**`, backticks and bullet markers on screen — in the one place a visitor decides whether to update. Headings, bold, inline code and lists are now converted to the small HTML the modal accepts, and everything is escaped: a release body containing HTML is shown as text, not rendered.
+
+### Added
+
+- **The self-updater is tested.** Version normalisation, asset selection (a whole-repository archive is skipped, an older plugin archive stays a usable fallback, a payload with nothing to install is refused), drafts and pre-releases declared unofferable, and the changelog conversion above. 23 new assertions, 249 in total.
+- `tests/bootstrap.php` now reads `BASTION_VERSION` from the plugin header instead of keeping its own copy, so the suites cannot pass against a version the plugin does not ship.
+
 ## [1.1.0] — 2026-10-29
 
 Fixes found by re-reading the plugin and running it on a real WordPress 7.1.4.
@@ -23,7 +34,8 @@ Fixes found by re-reading the plugin and running it on a real WordPress 7.1.4.
 
 - **New audit check: "Login screen is not served in clear text"** — the login URL is fetched over `http://` on its own, because a redirect that covers the front end but not `wp-login.php` protects the least interesting surface.
 - `Https::port_suffix()`, `Headers::response_headers()` and a `login` measurement in the audit probe.
-- 21 new assertions.
+- The self-updater is now tested: version normalisation, asset selection (a whole-repository archive is skipped, an older plugin archive is a usable fallback), drafts and pre-releases refused, and the Markdown of a release body converted to the small HTML the modal accepts — headings, bold, inline code, lists, all escaped.
+- 21 new assertions, 226 in total.
 
 ### Changed
 
@@ -57,4 +69,6 @@ First release.
 - The audit probed `https://` on an install that serves `http://`, so on such a site every check reported "unreachable". It now measures the URL the site actually serves, and probes TLS separately.
 - A check that could not run — site unreachable, DNS unavailable — was reported as a pass for the disclosure group. It is now a warning, so nothing turns green by default.
 
+[1.1.1]: https://github.com/zigmoon/bastion/releases/tag/v1.1.1
+[1.1.0]: https://github.com/zigmoon/bastion/releases/tag/v1.1.0
 [1.0.0]: https://github.com/zigmoon/bastion/releases/tag/v1.0.0

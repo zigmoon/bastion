@@ -363,6 +363,10 @@ final class Updater {
 	/**
 	 * Minimal Markdown to the small HTML subset the modal accepts.
 	 *
+	 * A release body is a changelog written in Markdown. Passed through as-is
+	 * it reads as a wall of asterisks and backticks in the "View details"
+	 * modal, which is exactly where a visitor decides whether to update.
+	 *
 	 * @param string $body Release body.
 	 */
 	public static function changelog_markup( string $body ): string {
@@ -375,18 +379,45 @@ final class Updater {
 				continue;
 			}
 
-			if ( preg_match( '/^[-*]\s+(.*)$/', $line, $match ) ) {
-				$html .= '<li>' . esc_html( $match[1] ) . '</li>';
+			if ( preg_match( '/^(#{1,6})\s+(.*)$/', $line, $match ) ) {
+				$title = trim( $match[2] );
+
+				// The opening heading only repeats the version and the date the
+				// modal already prints above the changelog.
+				if ( preg_match( '/^\[?v?\d+(\.\d+)*/', $title ) ) {
+					continue;
+				}
+
+				$html .= '<h4>' . esc_html( $title ) . '</h4>';
 				continue;
 			}
 
-			$html .= '<p>' . esc_html( ltrim( $line, '#' ) ) . '</p>';
+			if ( preg_match( '/^[-*+]\s+(.*)$/', $line, $match ) ) {
+				$html .= '<li>' . self::inline_markup( $match[1] ) . '</li>';
+				continue;
+			}
+
+			$html .= '<p>' . self::inline_markup( $line ) . '</p>';
 		}
 
 		if ( false !== strpos( $html, '<li>' ) ) {
 			// Wrap the runs of list items, without a full parser.
 			$html = (string) preg_replace( '/(?:<li>.*?<\/li>)+/s', '<ul>$0</ul>', $html );
 		}
+
+		return $html;
+	}
+
+	/**
+	 * `**bold**` and `` `code` ``, escaped first.
+	 *
+	 * @param string $text One line of Markdown.
+	 */
+	private static function inline_markup( string $text ): string {
+		$html = esc_html( $text );
+
+		$html = (string) preg_replace( '/\*\*(.+?)\*\*/s', '<strong>$1</strong>', $html );
+		$html = (string) preg_replace( '/`([^`]+)`/s', '<code>$1</code>', $html );
 
 		return $html;
 	}
