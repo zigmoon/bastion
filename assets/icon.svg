@@ -3,12 +3,17 @@
 	<!-- Rounded card: the near-white plate the mark sits on. -->
 	<rect x="0" y="0" width="512" height="512" rx="76" fill="#f7f8fa"/>
 
-	<!-- A battlemented wall: three merlons, two embrasures. -->
-	<path d="M138 400V200h50v44h42v-44h52v44h42v-44h50v200" fill="none" stroke="#0b0d10" stroke-width="32" stroke-linejoin="miter" stroke-linecap="square"/>
+	<!--
+		A gate through a wall, filled.
 
-	<!-- The ground line the wall stands on. -->
-	<path d="M112 400h288" fill="none" stroke="#0b0d10" stroke-width="32" stroke-linecap="square"/>
+		One solid silhouette rather than a drawing: a dark opening between two
+		dark piers is the only shape that still reads at 32 px, where a stroke
+		of a few pixels turns to grey.
 
-	<!-- The gate: filled, so the mark still reads at 32 px. -->
-	<path d="M228 400v-58a28 28 0 0 1 56 0v58Z" fill="#0b0d10"/>
+		The two arches share their spring line at y 256 — the opening is
+		concentric with the crown — so the band is 56 px wide everywhere: at the
+		apex, down both piers, and into the base. Nothing is thicker than
+		anything else, which is what keeps a fill this heavy from looking clumsy.
+	-->
+	<path d="M100 412V256A156 156 0 0 1 412 256V412H356V256A100 100 0 0 0 156 256V412Z" fill="#0b0d10"/>
 </svg>

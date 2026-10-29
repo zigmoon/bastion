@@ -20,7 +20,7 @@
 <p align="center">
   <img alt="WordPress 6.5 to 7.1" src="https://img.shields.io/badge/WordPress-6.5%20%E2%86%92%207.1-0b0d10?style=flat-square">
   <img alt="PHP 8.2 to 8.5" src="https://img.shields.io/badge/PHP-8.2%20%E2%86%92%208.5-0b0d10?style=flat-square">
-  <img alt="version 1.1.2" src="https://img.shields.io/badge/version-1.1.2-0a66ff?style=flat-square">
+  <img alt="version 1.1.3" src="https://img.shields.io/badge/version-1.1.3-0a66ff?style=flat-square">
   <img alt="254 assertions" src="https://img.shields.io/badge/tests-254%20assertions-0b0d10?style=flat-square">
   <img alt="Licence GPL-2.0-or-later" src="https://img.shields.io/badge/licence-GPL--2.0--or--later-0b0d10?style=flat-square">
 </p>
@@ -90,7 +90,7 @@ Click a panel for the full-size view. Five tabs: **Overview**, **HTTPS**, **Head
 
 ## Install
 
-1. Download `Bastion-1.1.2.zip` from [Releases](https://github.com/zigmoon/bastion/releases).
+1. Download `Bastion-1.1.3.zip` from [Releases](https://github.com/zigmoon/bastion/releases).
 2. **Plugins → Add New → Upload Plugin**, install, activate.
 3. **Settings → Bastion**: press **Run the audit**, read the report.
 4. Fix what you can at the server level first. Then switch to **Apply** and turn on what you need, one group at a time.

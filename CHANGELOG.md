@@ -4,6 +4,13 @@ All notable changes to Bastion are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [semantic versioning](https://semver.org/).
 
+## [1.1.3] — 2026-10-29
+
+### Changed
+
+- **A new mark.** The battlemented wall is gone. The icon is now a single filled gate: the opening and the crown are concentric arches with one spring line, so the band is 56 px wide at the apex, down both piers and into the base — nothing thicker than anything else, which is what keeps a mass this heavy from looking clumsy. A solid silhouette replaces the line drawing because at 32 px a stroke of a few pixels turns to grey.
+- `tools/build-icon-master.ps1` now draws that path instead of the old wall, and states the shared geometry in its header. Both renders — the SVG and the GDI+ raster — were measured at 512 px: 15.24 % and 15.16 % ink, so the two drawings are the same drawing.
+
 ## [1.1.2] — 2026-10-29
 
 ### Fixed
@@ -76,6 +83,7 @@ First release.
 - The audit probed `https://` on an install that serves `http://`, so on such a site every check reported "unreachable". It now measures the URL the site actually serves, and probes TLS separately.
 - A check that could not run — site unreachable, DNS unavailable — was reported as a pass for the disclosure group. It is now a warning, so nothing turns green by default.
 
+[1.1.3]: https://github.com/zigmoon/bastion/releases/tag/v1.1.3
 [1.1.2]: https://github.com/zigmoon/bastion/releases/tag/v1.1.2
 [1.1.1]: https://github.com/zigmoon/bastion/releases/tag/v1.1.1
 [1.1.0]: https://github.com/zigmoon/bastion/releases/tag/v1.1.0

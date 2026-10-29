@@ -4,7 +4,7 @@
  * Plugin URI:        https://github.com/zigmoon/bastion
  * Update URI:        https://github.com/zigmoon/bastion
  * Description:       Forces HTTPS, sets the security headers, closes the version leaks and audits the result on the live site — with nothing applied until you ask.
- * Version:           1.1.2
+ * Version:           1.1.3
  * Requires at least: 6.5
  * Tested up to:      7.1
  * Requires PHP:      8.2
@@ -23,7 +23,7 @@ namespace Bastion;
 defined( 'ABSPATH' ) || exit;
 
 if ( ! defined( 'BASTION_VERSION' ) ) {
-	define( 'BASTION_VERSION', '1.1.2' );
+	define( 'BASTION_VERSION', '1.1.3' );
 }
 if ( ! defined( 'BASTION_FILE' ) ) {
 	define( 'BASTION_FILE', __FILE__ );

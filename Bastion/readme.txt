@@ -4,7 +4,7 @@ Tags: security, https, hsts, security headers, csp, dmarc
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,6 +106,9 @@ PHP 8.2 to 8.5, and WordPress 6.5 to 7.1.
 
 == Changelog ==
 
+= 1.1.3 =
+* A new icon: one filled gate, its opening and its crown drawn as concentric arches, so the band is the same width everywhere. A solid silhouette rather than a drawing, so it still reads at 32 px.
+
 = 1.1.2 =
 * The updater no longer offers a release that is not strictly newer than the installed version.
 
@@ -137,6 +140,9 @@ PHP 8.2 to 8.5, and WordPress 6.5 to 7.1.
 * 205 assertions.
 
 == Upgrade Notice ==
+
+= 1.1.3 =
+A new icon. Nothing changes on the site itself.
 
 = 1.1.2 =
 The update check no longer badges a plugin that is already current.
