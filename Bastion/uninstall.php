@@ -14,10 +14,12 @@ function bastion_uninstall_site(): void {
 	$settings = get_option( 'bastion_settings', array() );
 	$settings = is_array( $settings ) ? $settings : array();
 
-	// Off by default would leave rows behind on a site that wanted them gone;
-	// on by default would surprise someone who only wanted to reinstall. The
-	// plugin asks, and the answer is what is honoured.
-	if ( empty( $settings['delete_data'] ) ) {
+	// The default is to clean up, so an install that was never saved must not be
+	// treated as "keep everything": activating and deleting would otherwise
+	// leave two rows behind for ever.
+	$delete = array_key_exists( 'delete_data', $settings ) ? (bool) $settings['delete_data'] : true;
+
+	if ( ! $delete ) {
 		return;
 	}
 

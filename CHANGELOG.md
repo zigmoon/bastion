@@ -4,6 +4,33 @@ All notable changes to Bastion are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [semantic versioning](https://semver.org/).
 
+## [1.1.0] — 2026-10-29
+
+Fixes found by re-reading the plugin and running it on a real WordPress 7.1.4.
+
+### Fixed
+
+- **The HTTPS redirect never covered the login screen.** `wp-login.php` is a standalone file: it fires `login_init`, never `template_redirect`, so the redirect that protected the front end left the one page that carries a password in clear text completely untouched. The hook is now registered on both.
+- **The redirect dropped a non-standard port.** `http://host:8080/page` was redirected to `https://host/page`, which on a staging install is a redirect to nothing. The port of the configured site URL is now kept; port 80 alone is dropped, because HTTPS answers on 443.
+- **The CSP "safe" preset could break a page.** It carried `object-src 'none'`, which stops `<embed>` and `<object>` from loading a PDF, and `form-action 'self'`, which stops a checkout page from posting to a payment gateway. Both moved to the strict preset.
+- **`Permissions-Policy` disabled `payment`**, which silently breaks Apple Pay, Google Pay and Stripe's express checkout. The default is now `camera`, `microphone` and `geolocation` only.
+- **`X-Powered-By` was only removed when the header switches were on.** It is a disclosure, not a header policy: it is now removed independently.
+- **A dry run wrote to the options table on every single page view.** High-frequency events are throttled to one entry per minute per event and detail.
+- **The welcome notice came back on every page.** `is-dismissible` only hides a custom notice client-side; there is now a real Dismiss button with a nonce and an `admin_post_` handler that records the choice.
+- The audit reported a report-only CSP as a pass. Nothing is blocked in report-only mode, so it is now reported as *to review*.
+
+### Added
+
+- **New audit check: "Login screen is not served in clear text"** — the login URL is fetched over `http://` on its own, because a redirect that covers the front end but not `wp-login.php` protects the least interesting surface.
+- `Https::port_suffix()`, `Headers::response_headers()` and a `login` measurement in the audit probe.
+- 21 new assertions.
+
+### Changed
+
+- `HSTS` is now decided by `Https::is_secure()` rather than `is_ssl()`, so a site behind a TLS-terminating CDN still gets the header.
+- Mixed content is reported as *not applicable* rather than *pass* when the site itself is served over HTTP.
+- The `force_https` and `block_readme` help texts state the real limits instead of a promise.
+
 ## [1.0.0] — 2026-10-28
 
 First release.

@@ -59,6 +59,7 @@ final class Admin {
 		add_action( 'admin_post_bastion_run_audit', array( $this, 'handle_audit' ) );
 		add_action( 'admin_post_bastion_report', array( $this, 'handle_report' ) );
 		add_action( 'admin_post_bastion_clear_log', array( $this, 'handle_clear_log' ) );
+		add_action( 'admin_post_bastion_dismiss_welcome', array( $this, 'handle_dismiss_welcome' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ) );
 		add_action( 'admin_notices', array( $this, 'notices' ) );
 		add_filter( 'plugin_action_links_' . BASTION_BASENAME, array( $this, 'action_links' ) );
@@ -229,6 +230,32 @@ final class Admin {
 	}
 
 	/**
+	 * Forgets the welcome notice.
+	 *
+	 * WordPress's own "dismiss" only hides the notice in the browser: without a
+	 * handler the same panel came back on every page load, which is the fastest
+	 * way to teach someone to ignore every notice on the screen.
+	 */
+	public function handle_dismiss_welcome(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You are not allowed to change these settings.', 'bastion' ), '', array( 'response' => 403 ) );
+		}
+
+		check_admin_referer( 'bastion_dismiss_welcome' );
+
+		delete_option( Settings::WELCOME_OPTION );
+
+		$target = wp_get_referer();
+
+		if ( ! is_string( $target ) || '' === $target ) {
+			$target = admin_url( 'options-general.php?page=bastion' );
+		}
+
+		wp_safe_redirect( $target );
+		exit;
+	}
+
+	/**
 	 * Notices.
 	 */
 	public function notices(): void {
@@ -257,13 +284,14 @@ final class Admin {
 			return;
 		}
 		?>
-		<div class="notice notice-info is-dismissible bastion-welcome">
+		<div class="notice notice-info bastion-welcome">
 			<p>
 				<strong><?php esc_html_e( 'Bastion is in audit mode.', 'bastion' ); ?></strong>
 				<?php esc_html_e( 'It measures and reports; nothing on the front end has been changed. Read the report, then switch to “Apply” when the failures make sense to you.', 'bastion' ); ?>
 			</p>
 			<p class="bastion-welcome-actions">
 				<a class="button button-primary" href="<?php echo esc_url( admin_url( 'options-general.php?page=bastion' ) ); ?>"><?php esc_html_e( 'Open the report', 'bastion' ); ?></a>
+				<a class="button-link" href="<?php echo esc_url( $this->dismiss_url() ); ?>"><?php esc_html_e( 'Dismiss', 'bastion' ); ?></a>
 				<span class="bastion-welcome-credit">
 					<?php
 					printf(
@@ -468,7 +496,7 @@ wp bastion audit</code></pre>
 					<?php
 					$this->section( __( 'Redirect', 'bastion' ) );
 
-					$this->field_switch( 'force_https', __( 'Send clear-text requests to HTTPS', 'bastion' ), (bool) $settings['force_https'], __( 'Off by default. Only GET and HEAD are redirected: redirecting a POST silently turns it into a GET and loses the form.', 'bastion' ) );
+					$this->field_switch( 'force_https', __( 'Send clear-text requests to HTTPS', 'bastion' ), (bool) $settings['force_https'], __( 'Off by default. Covers every front-end page and the login screen, including the password reset. Only GET and HEAD are redirected — a POST is never touched, because a 301 would turn it into a GET and silently lose the body of the form. The REST API and admin-ajax.php answer before this hook runs, so a JSON client is never bounced through a redirect. The port is kept, so a site on 8443 stays on 8443.', 'bastion' ) );
 					$this->field_switch( 'https_dry_run', __( 'Dry run: log instead of redirect', 'bastion' ), (bool) $settings['https_dry_run'], __( 'Keep this on for a day: the log shows what would have been redirected, and nothing breaks if the certificate is not ready.', 'bastion' ) );
 
 					$this->field_select(
@@ -524,7 +552,7 @@ wp bastion audit</code></pre>
 							'report-only' => __( 'Report only — nothing is blocked', 'bastion' ),
 							'enforce'     => __( 'Enforce', 'bastion' ),
 						),
-						__( 'Report-only makes the browser report what it would have blocked, without blocking it: it is the only honest way to build a policy on a site you did not write.', 'bastion' )
+						__( 'Report-only makes the browser report what it would have blocked, without blocking it: it is the only honest way to build a policy on a site you did not write. The policy covers wp-admin too, so test it in report-only before enforcing anything strict.', 'bastion' )
 					);
 
 					$this->field_select(
@@ -648,13 +676,7 @@ wp bastion audit</code></pre>
 						<?php else : ?>
 							<code class="bas-record" data-bas-copy><?php echo esc_html( $spf ); ?></code>
 							<p class="bas-help">
-								<?php
-								printf(
-									/* translators: %s: domain name. */
-									esc_html__( 'Name: @ — Type: TXT — Value above. One SPF record per domain, never two.', 'bastion' ),
-									esc_html( $dns->domain() )
-								);
-								?>
+								<?php esc_html_e( 'Name: @ — Type: TXT — Value above. One SPF record per domain, never two.', 'bastion' ); ?>
 							</p>
 						<?php endif; ?>
 					</div>
@@ -809,6 +831,16 @@ wp bastion audit</code></pre>
 		return wp_nonce_url(
 			admin_url( 'admin-post.php?action=bastion_run_audit' ),
 			'bastion_run_audit'
+		);
+	}
+
+	/**
+	 * URL that forgets the welcome notice.
+	 */
+	private function dismiss_url(): string {
+		return wp_nonce_url(
+			admin_url( 'admin-post.php?action=bastion_dismiss_welcome' ),
+			'bastion_dismiss_welcome'
 		);
 	}
 

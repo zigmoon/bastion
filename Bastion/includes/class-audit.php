@@ -134,6 +134,10 @@ final class Audit {
 			'served'     => $served,
 			'https'      => $tls ? $served : $this->fetch( (string) set_url_scheme( $home, 'https' ) ),
 			'http'       => $this->fetch( (string) set_url_scheme( $home, 'http' ) ),
+			// The login screen is the one page that carries a password: it is
+			// measured on its own, because a redirect that covers the front end
+			// but not `wp-login.php` protects the least interesting surface.
+			'login'      => $this->fetch( (string) set_url_scheme( $home, 'http' ) . '/wp-login.php' ),
 			'readme'     => $this->fetch( $home . '/readme.html' ),
 			'generator'  => '',
 			'http_links' => array(),
@@ -150,7 +154,13 @@ final class Audit {
 			$probe['ver']        = self::version_query( $html );
 		}
 
-		unset( $probe['served']['body'], $probe['https']['body'], $probe['http']['body'], $probe['readme']['body'] );
+		unset(
+			$probe['served']['body'],
+			$probe['https']['body'],
+			$probe['http']['body'],
+			$probe['login']['body'],
+			$probe['readme']['body']
+		);
 
 		set_site_transient( self::CACHE, $probe, 30 * MINUTE_IN_SECONDS );
 
@@ -287,6 +297,25 @@ final class Audit {
 			$closed ? '' : __( 'Bastion → HTTPS → force, or a server-level redirect.', 'bastion' )
 		);
 
+		// The login screen is a separate file that never reaches the front-end
+		// hook: it needs its own measurement, because a redirect that misses it
+		// leaves the password in clear text.
+		$login       = (array) ( $probe['login'] ?? array() );
+		$login_ok    = (bool) ( $login['ok'] ?? false );
+		$login_code  = (int) ( $login['code'] ?? 0 );
+		$login_where = strtolower( (string) ( $login['headers']['location'] ?? '' ) );
+		$login_back  = ! $login_ok || ( in_array( $login_code, array( 301, 302, 307, 308 ), true ) && str_starts_with( $login_where, 'https://' ) );
+
+		$rows[] = self::row(
+			'login_redirect',
+			__( 'Login screen is not served in clear text', 'bastion' ),
+			$login_back ? self::PASS : self::FAIL,
+			! $login_ok
+				? __( 'unreachable over http://', 'bastion' )
+				: 'HTTP ' . $login_code . ( $login_where ? ' → ' . $login_where : ' — ' . __( 'no redirect', 'bastion' ) ),
+			$login_back ? '' : __( 'The page that carries a password must be covered too: switch on {force https}, or add a server-level redirect.', 'bastion' )
+		);
+
 		$hsts = (string) ( $https['headers']['strict-transport-security'] ?? '' );
 		$age  = preg_match( '/max-age=(\d+)/i', $hsts, $match ) ? (int) $match[1] : 0;
 
@@ -323,14 +352,31 @@ final class Audit {
 
 		$rows = array();
 
-		$rows[] = $this->header_row(
-			'csp',
-			__( 'Content-Security-Policy', 'bastion' ),
-			array( 'content-security-policy', 'content-security-policy-report-only' ),
-			$headers,
-			$reachable,
-			__( 'Bastion → Headers → policy.', 'bastion' )
-		);
+		// The CSP is the one header where "present" is not the same as "in
+		// force": a report-only policy blocks nothing. Reporting it as a pass
+		// would be exactly the kind of green tick this audit exists to avoid.
+		$enforcing = (string) ( $headers['content-security-policy'] ?? '' );
+		$reporting = (string) ( $headers['content-security-policy-report-only'] ?? '' );
+
+		if ( '' !== $enforcing ) {
+			$rows[] = self::row( 'csp', __( 'Content-Security-Policy', 'bastion' ), self::PASS, 'content-security-policy: ' . $enforcing, '' );
+		} elseif ( '' !== $reporting ) {
+			$rows[] = self::row(
+				'csp',
+				__( 'Content-Security-Policy', 'bastion' ),
+				self::WARN,
+				__( 'report-only, so nothing is blocked yet:', 'bastion' ) . ' ' . $reporting,
+				__( 'Read the violations in the browser console, then switch the mode to “Enforce”.', 'bastion' )
+			);
+		} else {
+			$rows[] = self::row(
+				'csp',
+				__( 'Content-Security-Policy', 'bastion' ),
+				$reachable ? self::FAIL : self::WARN,
+				$reachable ? __( 'header absent', 'bastion' ) : __( 'site unreachable', 'bastion' ),
+				$reachable ? __( 'Bastion → Headers → policy.', 'bastion' ) : ''
+			);
+		}
 
 		$rows[] = $this->header_row(
 			'xfo',
@@ -492,16 +538,30 @@ final class Audit {
 
 		$links = (array) ( $probe['http_links'] ?? array() );
 		$count = count( $links );
+		$tls   = (bool) ( $probe['tls'] ?? false );
 
-		$rows[] = self::row(
-			'mixed',
-			__( 'No mixed content', 'bastion' ),
-			! $reachable ? self::WARN : ( 0 === $count ? self::PASS : self::FAIL ),
-			! $reachable
-				? __( 'could not read the page', 'bastion' )
-				: ( 0 === $count ? __( 'every resource is loaded over HTTPS', 'bastion' ) : $count . ' · ' . implode( ' · ', array_slice( $links, 0, 3 ) ) ),
-			$count > 0 ? __( 'Search the theme and the plugins for http:// URLs, or the database if they come from the content.', 'bastion' ) : ''
-		);
+		// Mixed content is a browser rule about an HTTPS page: on a site served
+		// over HTTP there is nothing to mix, and a failure here would be a
+		// finding that cannot be fixed without moving to TLS first.
+		if ( ! $reachable ) {
+			$rows[] = self::row( 'mixed', __( 'No mixed content', 'bastion' ), self::WARN, __( 'could not read the page', 'bastion' ), '' );
+		} elseif ( ! $tls ) {
+			$rows[] = self::row(
+				'mixed',
+				__( 'No mixed content', 'bastion' ),
+				self::WARN,
+				__( 'not applicable: the site itself is served over HTTP', 'bastion' ),
+				__( 'Mixed content only exists on an HTTPS page. Move the site to HTTPS first.', 'bastion' )
+			);
+		} else {
+			$rows[] = self::row(
+				'mixed',
+				__( 'No mixed content', 'bastion' ),
+				0 === $count ? self::PASS : self::FAIL,
+				0 === $count ? __( 'every resource is loaded over HTTPS', 'bastion' ) : $count . ' · ' . implode( ' · ', array_slice( $links, 0, 3 ) ),
+				$count > 0 ? __( 'Search the theme and the plugins for http:// URLs, or the database if they come from the content.', 'bastion' ) : ''
+			);
+		}
 
 		$readme = (array) ( $probe['readme'] ?? array() );
 		$code   = (int) ( $readme['code'] ?? 0 );
@@ -596,8 +656,10 @@ final class Audit {
 	/**
 	 * Resources the page loads over http://.
 	 *
-	 * Only attributes that trigger a fetch are read: a plain `http://` in a
-	 * paragraph of text is not mixed content.
+	 * Only what the browser actually fetches counts. A `<link rel="alternate">`
+	 * pointing at an `http://` feed, or an `http://` URL inside a paragraph, is
+	 * a hyperlink, not mixed content — counting those made the check fire on
+	 * every plain-HTTP site with its own feeds, which is noise, not a finding.
 	 *
 	 * @param string $html Page.
 	 * @return array<int, string>
@@ -605,11 +667,29 @@ final class Audit {
 	public static function plaintext_assets( string $html ): array {
 		$found = array();
 
-		$pattern = '/<(?:script|img|iframe|link|source|video|audio|embed|object)\b[^>]*?\b(?:src|href|data|poster)\s*=\s*["\']?(http:\/\/[^"\'\s>]+)/i';
+		// Elements whose src/data/poster the browser fetches on its own.
+		$pattern = '/<(?:script|img|iframe|source|video|audio|embed|object)\b[^>]*?\b(?:src|data|poster)\s*=\s*["\']?(http:\/\/[^"\'\s>]+)/i';
 
 		if ( preg_match_all( $pattern, $html, $matches ) ) {
 			foreach ( $matches[1] as $url ) {
 				$found[ $url ] = true;
+			}
+		}
+
+		// <link> only fetches when its rel says so.
+		if ( preg_match_all( '/<link\b[^>]*>/i', $html, $links ) ) {
+			foreach ( $links[0] as $tag ) {
+				if ( ! preg_match( '/\brel\s*=\s*["\']?([^"\'\s>]+)/i', $tag, $rel ) ) {
+					continue;
+				}
+
+				if ( ! preg_match( '/(?:^|\s)(?:stylesheet|preload|modulepreload|manifest|mask-icon|icon|shortcut|apple-touch-icon)(?:\s|$)/i', $rel[1] ) ) {
+					continue;
+				}
+
+				if ( preg_match( '/\bhref\s*=\s*["\']?(http:\/\/[^"\'\s>]+)/i', $tag, $href ) ) {
+					$found[ $href[1] ] = true;
+				}
 			}
 		}
 

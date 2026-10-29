@@ -38,14 +38,20 @@ final class Https {
 	}
 
 	/**
-	 * Registers the hook.
+	 * Registers the hooks.
 	 *
-	 * `template_redirect` runs after WordPress has routed the request and before
-	 * anything is printed: early enough to redirect, late enough to know the
-	 * request is a page view and not a cron tick or a REST call.
+	 * Two entry points, because one is not enough:
+	 *
+	 * - `template_redirect` covers the front end. It runs after WordPress has
+	 *   routed the request, so it knows the request is a page view and not a
+	 *   cron tick.
+	 * - `login_init` covers `wp-login.php`, which is a standalone file that
+	 *   never fires `template_redirect`. Skipping it would leave the one page
+	 *   that carries a password in clear text completely unprotected.
 	 */
 	public function hooks(): void {
 		add_action( 'template_redirect', array( $this, 'maybe_redirect' ), 1 );
+		add_action( 'login_init', array( $this, 'maybe_redirect' ), 1 );
 	}
 
 	/**
@@ -85,9 +91,11 @@ final class Https {
 		$method = strtoupper( (string) ( $_SERVER['REQUEST_METHOD'] ?? 'GET' ) );
 
 		// A 301 on a POST silently turns it into a GET and loses the body:
-		// better to log once than to break a checkout or a form.
+		// better to log once than to break a checkout or a form. The login POST
+		// is the one case worth naming, because that is a password in clear
+		// text — it gets its own event so the log says what happened.
 		if ( ! in_array( $method, array( 'GET', 'HEAD' ), true ) ) {
-			$this->log( 'https_post_left_alone', $method );
+			$this->log( 'https_post_left_alone', $method . ' ' . (string) wp_parse_url( self::current_url(), PHP_URL_PATH ) );
 
 			return null;
 		}
@@ -258,13 +266,29 @@ final class Https {
 			return null;
 		}
 
-		$target = 'https://' . $host . $path;
+		$target = 'https://' . $host . self::port_suffix( $home ) . $path;
 
 		if ( is_string( $query ) && '' !== $query ) {
 			$target .= '?' . $query;
 		}
 
 		return $target;
+	}
+
+	/**
+	 * The `:port` part of the redirect target.
+	 *
+	 * The port is part of the destination: a site served on 8080 or 8443 must
+	 * not be sent to 443, where nothing is listening. Port 80 is the one case
+	 * that has to be dropped, because HTTPS answers on 443 and writing
+	 * `https://host:80` would be a redirect to nowhere.
+	 *
+	 * @param string $home The configured site URL.
+	 */
+	public static function port_suffix( string $home ): string {
+		$port = (int) wp_parse_url( $home, PHP_URL_PORT );
+
+		return $port > 0 && 80 !== $port ? ':' . $port : '';
 	}
 
 	/**

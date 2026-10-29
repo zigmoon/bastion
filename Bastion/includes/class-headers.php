@@ -45,19 +45,47 @@ final class Headers {
 
 	/**
 	 * Sends the headers, if the plugin is allowed to act.
+	 *
+	 * Two decisions here matter more than they look:
+	 *
+	 * 1. **HSTS follows the real scheme, proxies included.** Asking only
+	 *    `$_SERVER['HTTPS']` would mean a site behind a TLS-terminating CDN
+	 *    never sends the header at all — the plugin would be configured and do
+	 *    nothing. The proxy branch only trusts a declared peer, so a visitor
+	 *    still cannot fake it.
+	 * 2. **Removing `X-Powered-By` is a disclosure, not a header.** It has its
+	 *    own switch and its own tab, so it must not be tied to the header
+	 *    master switch: someone who only wants the version hidden should not
+	 *    have to publish a CSP to get it.
 	 */
 	public function send(): void {
-		if ( ! $this->settings->active( 'headers_enabled' ) || headers_sent() ) {
+		if ( headers_sent() ) {
 			return;
 		}
 
-		foreach ( self::build( $this->settings, self::is_ssl() ) as $name => $value ) {
+		foreach ( $this->response_headers() as $name => $value ) {
 			header( $name . ': ' . $value, true );
 		}
 
-		if ( $this->settings->get( 'remove_powered_by' ) && function_exists( 'header_remove' ) ) {
+		if ( $this->settings->active( 'remove_powered_by' ) && function_exists( 'header_remove' ) ) {
 			header_remove( 'X-Powered-By' );
 		}
+	}
+
+	/**
+	 * The headers this request would carry, or an empty map when nothing applies.
+	 *
+	 * Separated from `send()` so the decision — including "am I behind a TLS
+	 * proxy" — can be asserted without a web server.
+	 *
+	 * @return array<string, string>
+	 */
+	public function response_headers(): array {
+		if ( ! $this->settings->active( 'headers_enabled' ) ) {
+			return array();
+		}
+
+		return self::build( $this->settings, Https::is_secure( $this->settings ) );
 	}
 
 	/**
@@ -187,6 +215,16 @@ final class Headers {
 	 * The enforced-safe policy, with frame-ancestors following the X-Frame-Options
 	 * choice so the two can never contradict each other.
 	 *
+	 * Only two directives, and that is the whole point: both describe something
+	 * no legitimate page needs, so neither can break one.
+	 *
+	 * `object-src 'none'` used to live here and was moved to the strict preset:
+	 * it also blocks `<embed src="file.pdf">` and `<object data="file.pdf">`,
+	 * which plenty of sites use to show a PDF. `form-action 'self'` moved as
+	 * well: it blocks any form that posts to another origin, and that is exactly
+	 * how many payment gateways and single-sign-on flows work — a checkout that
+	 * silently stops working is not "safe".
+	 *
 	 * @param Settings $settings Settings.
 	 */
 	private static function safe_policy( Settings $settings ): string {
@@ -201,9 +239,9 @@ final class Headers {
 		$directives = array_filter(
 			array(
 				$ancestors,
+				// A `<base href>` pointing at another origin is only ever an
+				// injection: no legitimately written page does it.
 				"base-uri 'self'",
-				"object-src 'none'",
-				"form-action 'self'",
 			)
 		);
 

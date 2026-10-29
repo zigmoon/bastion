@@ -4,7 +4,7 @@ Tags: security, https, hsts, security headers, csp, dmarc
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,7 +24,7 @@ Bastion hardens a WordPress site without ever surprising it. It ships in **audit
 
 **Disclosures.** No generator meta, no `?ver=<core version>` (replaced by a hash of the file, so cache busting still works), no RSD or WLW manifest link, no shortlink, no `X-Pingback`, no `X-Powered-By`, and a 404 for `readme.html`.
 
-**The audit.** Nineteen checks in four groups, each with its status, its evidence and the remedy — measured by fetching the site's own pages and reading the headers that really came back, then querying DNS. A check that cannot be measured says so; it never turns green by default. Exportable as Markdown.
+**The audit.** Twenty checks in four groups, each with its status, its evidence and the remedy — measured by fetching the site's own pages and reading the headers that really came back, then querying DNS. A check that cannot be measured says so; it never turns green by default. Exportable as Markdown.
 
 **Built for the current stack** — WordPress 6.5 through 7.1, PHP 8.2 through 8.5. Only maintained WordPress APIs, no deprecated calls, no Composer or npm build step. The single outbound request is the update check against GitHub, once every 12 hours, and it can be switched off.
 
@@ -33,7 +33,7 @@ Bastion hardens a WordPress site without ever surprising it. It ships in **audit
 * Strictly escaped output, validated input, capability checks and nonces on every admin action.
 * A newline in any header value is removed in sanitisation, never at send time.
 * Small, single-responsibility classes: settings, headers, https, disclosure, DNS, audit, admin, CLI.
-* 205 automated assertions ship in the `tests/` directory (unit tests plus a boot/render smoke test).
+* 226 automated assertions ship in the `tests/` directory (unit tests plus a boot/render smoke test).
 * English source strings, complete French and Spanish translations, `.pot` catalogue.
 * Writes no file. Creates no table. `define( 'BASTION_DISABLED', true );` stops everything in memory.
 
@@ -106,6 +106,17 @@ PHP 8.2 to 8.5, and WordPress 6.5 to 7.1.
 
 == Changelog ==
 
+= 1.1.0 =
+* The redirect now covers wp-login.php, the password reset and the whole login flow — the file never fires template_redirect, so it gets its own hook.
+* A non-standard port is kept in the redirect target: a site on 8443 is no longer sent to 443.
+* New audit check: "Login screen is not served in clear text".
+* The CSP safe preset is frame-ancestors and base-uri only; object-src 'none' and form-action 'self' moved to the strict preset, where breaking something is expected.
+* Permissions-Policy no longer disables payment, which broke Apple Pay, Google Pay and Stripe express.
+* X-Powered-By is removed even when the header switches are off: it is a disclosure, not a header policy.
+* High-frequency log events are throttled to one entry per minute, so a dry run does not write to the options table on every page view.
+* The welcome notice has a real Dismiss button instead of a client-side close that came back on the next page.
+* Twenty-check audit. 226 assertions.
+
 = 1.0.0 =
 * First release.
 * Audit mode by default: measures and reports, changes nothing.
@@ -115,10 +126,13 @@ PHP 8.2 to 8.5, and WordPress 6.5 to 7.1.
 * nosniff, Referrer-Policy, Permissions-Policy, COOP, X-XSS-Protection.
 * SPF and DMARC records generated and verified through DNS.
 * Generator, ?ver=, RSD, WLW, shortlink, X-Pingback, X-Powered-By and readme.html closed.
-* Nineteen-check audit with evidence, Markdown export, WP-CLI, activity log.
+* Twenty-check audit with evidence, Markdown export, WP-CLI, activity log.
 * 205 assertions.
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+The HTTPS redirect now covers the login screen, and keeps a non-standard port. Safer CSP preset, no payment permission removed, throttled log.
 
 = 1.0.0 =
 First release.

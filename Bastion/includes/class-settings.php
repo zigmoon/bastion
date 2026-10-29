@@ -80,7 +80,11 @@ final class Settings {
 			'headers_enabled'    => true,
 			'frame_options'      => 'SAMEORIGIN',
 			'referrer_policy'    => 'strict-origin-when-cross-origin',
-			'permissions_policy' => 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+			// `payment=()` is deliberately absent from the default: it disables
+			// the Payment Request API, which is what Apple Pay, Google Pay and
+			// Stripe's express checkout use. Blocking a payment button is not a
+			// hardening win.
+			'permissions_policy' => 'camera=(), microphone=(), geolocation=()',
 			'coop'               => false,
 			'csp_mode'           => 'report-only',
 			'csp_preset'         => 'safe',
@@ -450,6 +454,13 @@ final class Settings {
 	private const LOG_LIMIT = 30;
 
 	/**
+	 * Events that can fire on every single request, and are therefore throttled.
+	 *
+	 * @var array<int, string>
+	 */
+	private const THROTTLED_EVENTS = array( 'https_redirect_test', 'https_post_left_alone', 'doc_file_blocked' );
+
+	/**
 	 * Appends an entry to the capped activity log.
 	 *
 	 * The log holds no visitor data beyond the event name and a short detail:
@@ -463,6 +474,22 @@ final class Settings {
 			return;
 		}
 
+		$detail = $this->truncate( (string) preg_replace( '/[\r\n]+/', ' ', $detail ), 160 );
+
+		// The redirect events fire on *every* request in dry-run mode, and a
+		// write to `wp_options` per page view would make the safety net more
+		// expensive than the risk it covers. One row a minute per event and
+		// detail is enough to see what would happen.
+		if ( in_array( $event, self::THROTTLED_EVENTS, true ) ) {
+			$key = 'bastion_log_' . md5( $event . '|' . $detail );
+
+			if ( false !== get_transient( $key ) ) {
+				return;
+			}
+
+			set_transient( $key, 1, MINUTE_IN_SECONDS );
+		}
+
 		$log = get_option( self::LOG_OPTION, array() );
 		$log = is_array( $log ) ? $log : array();
 
@@ -471,7 +498,7 @@ final class Settings {
 			array(
 				'time'   => time(),
 				'event'  => substr( $event, 0, 40 ),
-				'detail' => $this->truncate( (string) preg_replace( '/[\r\n]+/', ' ', $detail ), 160 ),
+				'detail' => $detail,
 				'user'   => function_exists( 'get_current_user_id' ) ? get_current_user_id() : 0,
 			)
 		);

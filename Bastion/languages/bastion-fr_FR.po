@@ -2,7 +2,7 @@
 # Distributed under the GPL-2.0-or-later license.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bastion 1.0.0\n"
+"Project-Id-Version: Bastion 1.1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/zigmoon/bastion/issues\n"
 "POT-Creation-Date: 2026-10-28T00:00:00+00:00\n"
 "PO-Revision-Date: 2026-10-28T00:00:00+00:00\n"
@@ -14,311 +14,315 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Domain: bastion\n"
-#: Bastion/includes/class-audit.php:653
+#: Bastion/includes/class-audit.php:733
 msgid "%1$d passed, %2$d warnings, %3$d failed"
 msgstr "%1$d réussis, %2$d à surveiller, %3$d en échec"
 
-#: Bastion/includes/class-admin.php:614
+#: Bastion/includes/class-admin.php:642
 msgid "-all — hard fail, only the listed servers may send"
 msgstr "-all — échec strict, seuls les serveurs listés peuvent envoyer"
 
-#: Bastion/includes/class-admin.php:506
+#: Bastion/includes/class-admin.php:534
 msgid "180 days is the usual target (15552000). A first deployment can use 3600 for an hour, or 86400 for a day."
 msgstr "180 jours est la cible habituelle (15552000). Un premier déploiement peut utiliser 3600 pendant une heure, ou 86400 pendant un jour."
 
-#: Bastion/includes/class-admin.php:484
+#: Bastion/includes/class-admin.php:512
 msgid "301 is what search engines expect for a definitive move to HTTPS."
 msgstr "301 est ce que les moteurs de recherche attendent pour un passage définitif en HTTPS."
 
-#: Bastion/includes/class-admin.php:615
+#: Bastion/includes/class-admin.php:643
 msgid "?all — neutral, no position taken"
 msgstr "?all — neutre, aucune position prise"
 
-#: Bastion/includes/class-admin.php:501
+#: Bastion/includes/class-admin.php:529
 msgid "A browser that has seen the header refuses plain HTTP for the whole max-age, even if you remove the header afterwards. Start with a short max-age, confirm the site is stable for a week, then raise it."
 msgstr "Un navigateur qui a vu l’en-tête refuse le HTTP en clair pendant toute la durée du max-age, même si vous retirez l’en-tête ensuite. Commencez par un max-age court, vérifiez que le site tient une semaine, puis augmentez."
 
-#: Bastion/includes/class-admin.php:417
+#: Bastion/includes/class-admin.php:445
 msgid "A hardening plugin that acts the moment it is activated is a liability. Audit mode is the default, and the audit screen shows exactly what apply would change."
 msgstr "Un plugin de durcissement qui agit dès son activation est un risque. Le mode audit est celui par défaut, et l’écran d’audit montre exactement ce que « appliquer » changerait."
 
-#: Bastion/includes/class-audit.php:298
+#: Bastion/includes/class-audit.php:327
 msgid "A max-age below 180 days is a transitional value."
 msgstr "Un max-age inférieur à 180 jours est une valeur de transition."
 
-#: Bastion/includes/class-admin.php:595
+#: Bastion/includes/class-admin.php:623
 msgid "A plugin cannot write DNS"
 msgstr "Un plugin ne peut pas écrire dans le DNS"
 
-#: Bastion/includes/class-admin.php:354
+#: Bastion/includes/class-admin.php:382
 msgid "Active"
 msgstr "Actif"
 
-#: Bastion/includes/class-admin.php:755
+#: Bastion/includes/class-admin.php:777
 msgid "Activity"
 msgstr "Activité"
 
-#: Bastion/includes/class-admin.php:244
+#: Bastion/includes/class-admin.php:271
 msgid "Activity log cleared."
 msgstr "Journal d’activité vidé."
 
-#: Bastion/includes/class-audit.php:308
+#: Bastion/includes/class-audit.php:337
 msgid "Add define( 'FORCE_SSL_ADMIN', true ); to wp-config.php — the login cookie is worth as much as the password."
 msgstr "Ajoutez define( 'FORCE_SSL_ADMIN', true ); dans wp-config.php — le cookie de connexion vaut autant que le mot de passe."
 
-#: Bastion/includes/class-admin.php:459
+#: Bastion/includes/class-admin.php:487
 msgid "Add this line to wp-config.php to stop every change without touching the database:"
 msgstr "Ajoutez cette ligne dans wp-config.php pour arrêter tout changement sans toucher à la base :"
 
-#: Bastion/includes/class-admin.php:508
+#: Bastion/includes/class-admin.php:536
 msgid "Add “preload”"
 msgstr "Ajouter « preload »"
 
-#: Bastion/includes/class-audit.php:303
+#: Bastion/includes/class-audit.php:332
 msgid "Admin forced over HTTPS"
 msgstr "Administration forcée en HTTPS"
 
-#: Bastion/includes/class-admin.php:548
+#: Bastion/includes/class-admin.php:576
 msgid "An https URL that receives the violation reports. Leave empty to keep the reports in the browser console only."
 msgstr "Une URL https qui reçoit les rapports de violation. Laissez vide pour garder les rapports dans la console du navigateur seulement."
 
-#: Bastion/includes/class-admin.php:588
+#: Bastion/includes/class-admin.php:616
 msgid "Announces the PHP version. Best removed in php.ini (expose_php = Off); this covers the rest."
 msgstr "Annonce la version de PHP. Le mieux est de la retirer dans php.ini (expose_php = Off) ; ceci couvre le reste."
 
-#: Bastion/includes/class-admin.php:587
+#: Bastion/includes/class-admin.php:615
 msgid "Announces the XML-RPC endpoint on every response."
 msgstr "Annonce le point d’accès XML-RPC à chaque réponse."
 
-#: Bastion/includes/class-admin.php:589
+#: Bastion/includes/class-admin.php:617
 msgid "Answer 404 for readme.html"
 msgstr "Répondre 404 pour readme.html"
 
-#: Bastion/includes/class-admin.php:554 Bastion/includes/class-audit.php:337
+#: Bastion/includes/class-admin.php:582 Bastion/includes/class-audit.php:383
 msgid "Anti-clickjacking"
 msgstr "Anti-détournement de clic"
 
-#: Bastion/includes/class-admin.php:415
+#: Bastion/includes/class-admin.php:443
 msgid "Apply — the switches below take effect"
 msgstr "Appliquer — les interrupteurs ci-dessous prennent effet"
 
-#: Bastion/includes/class-admin.php:392
+#: Bastion/includes/class-admin.php:420
 msgid "Applying"
 msgstr "Applique"
 
-#: Bastion/includes/class-admin.php:452
+#: Bastion/includes/class-admin.php:480
 msgid "Asks github.com for the latest release once every 12 hours, and shows it on the Plugins and Updates screens. It is the only outbound request the plugin makes: switch it off to keep the plugin fully offline and update by hand."
 msgstr "Interroge github.com une fois toutes les 12 heures pour connaître la dernière version, et l’affiche dans les écrans Extensions et Mises à jour. C’est la seule requête sortante du plugin : désactivez-la pour le garder entièrement hors ligne et mettre à jour à la main."
 
-#: Bastion/includes/class-audit.php:487
+#: Bastion/includes/class-audit.php:533
 msgid "Asset versions hidden"
 msgstr "Versions des ressources masquées"
 
-#: Bastion/includes/class-admin.php:380
+#: Bastion/includes/class-admin.php:408
 msgid "Audit"
 msgstr "Audit"
 
-#: Bastion/includes/class-admin.php:252
+#: Bastion/includes/class-admin.php:279
 msgid "Audit complete: the report below was measured on the live site just now."
 msgstr "Audit terminé : le rapport ci-dessous vient d’être mesuré sur le site en ligne."
 
-#: Bastion/includes/class-admin.php:392
+#: Bastion/includes/class-admin.php:420
 msgid "Audit only"
 msgstr "Audit seul"
 
-#: Bastion/includes/class-admin.php:414
+#: Bastion/includes/class-admin.php:442
 msgid "Audit only — measure, change nothing"
 msgstr "Audit seul — mesurer, ne rien changer"
 
-#: Bastion/includes/class-admin.php:73 Bastion/includes/class-admin.php:74
+#: Bastion/includes/class-admin.php:74 Bastion/includes/class-admin.php:75
 msgid "Bastion"
 msgstr "Bastion"
 
-#: Bastion/includes/class-admin.php:288
+#: Bastion/includes/class-admin.php:316
 msgid "Bastion %1$s — a plugin by %2$s, dev by %3$s."
 msgstr "Bastion %1$s — un plugin de %2$s, développement par %3$s."
 
-#: Bastion/includes/class-admin.php:262
+#: Bastion/includes/class-admin.php:289
 msgid "Bastion is in audit mode."
 msgstr "Bastion est en mode audit."
 
-#: Bastion/includes/class-admin.php:375
+#: Bastion/includes/class-admin.php:403
 msgid "Bastion sections"
 msgstr "Sections de Bastion"
 
-#: Bastion/includes/class-audit.php:490
+#: Bastion/includes/class-audit.php:536
 msgid "Bastion → Disclosures → asset versions."
 msgstr "Bastion → Divulgations → versions des ressources."
 
-#: Bastion/includes/class-audit.php:480
+#: Bastion/includes/class-audit.php:526
 msgid "Bastion → Disclosures → generator."
 msgstr "Bastion → Divulgations → générateur."
 
-#: Bastion/includes/class-audit.php:470
+#: Bastion/includes/class-audit.php:516
 msgid "Bastion → Disclosures, or expose_php = Off in php.ini."
 msgstr "Bastion → Divulgations, ou expose_php = Off dans php.ini."
 
-#: Bastion/includes/class-audit.php:298
+#: Bastion/includes/class-audit.php:327
 msgid "Bastion → HTTPS → HSTS, once HTTPS is confirmed working."
 msgstr "Bastion → HTTPS → HSTS, une fois le HTTPS confirmé."
 
-#: Bastion/includes/class-audit.php:287
+#: Bastion/includes/class-audit.php:297
 msgid "Bastion → HTTPS → force, or a server-level redirect."
 msgstr "Bastion → HTTPS → forcer, ou une redirection au niveau du serveur."
 
-#: Bastion/includes/class-audit.php:332
+#: Bastion/includes/class-audit.php:377
 msgid "Bastion → Headers → policy."
 msgstr "Bastion → En-têtes → politique."
 
-#: Bastion/includes/class-admin.php:487
+#: Bastion/includes/class-admin.php:515
 msgid "Behind a proxy"
 msgstr "Derrière un proxy"
 
-#: Bastion/includes/class-admin.php:783
+#: Bastion/includes/class-admin.php:805
 msgid "Changes apply immediately."
 msgstr "Les changements s’appliquent immédiatement."
 
-#: Bastion/includes/class-admin.php:729 Bastion/includes/class-audit.php:668
+#: Bastion/includes/class-admin.php:751 Bastion/includes/class-audit.php:748
 msgid "Check"
 msgstr "Contrôle"
 
-#: Bastion/includes/class-admin.php:452
+#: Bastion/includes/class-admin.php:480
 msgid "Check GitHub for updates"
 msgstr "Rechercher les mises à jour sur GitHub"
 
-#: Bastion/includes/class-admin.php:647
+#: Bastion/includes/class-admin.php:675
 msgid "Choose a mail provider, or type a custom source, to generate the record."
 msgstr "Choisissez un fournisseur de messagerie, ou saisissez une source personnalisée, pour générer l’enregistrement."
 
-#: Bastion/includes/class-admin.php:331
+#: Bastion/includes/class-admin.php:359
 msgid "Choose…"
 msgstr "Choisir…"
 
-#: Bastion/includes/class-audit.php:282
+#: Bastion/includes/class-audit.php:292
 msgid "Clear text redirects to HTTPS"
 msgstr "Le trafic en clair redirige vers HTTPS"
 
-#: Bastion/includes/class-admin.php:790
+#: Bastion/includes/class-admin.php:812
 msgid "Clear the log"
 msgstr "Vider le journal"
 
-#: Bastion/includes/class-admin.php:516 Bastion/includes/class-audit.php:328
+#: Bastion/includes/class-admin.php:544 Bastion/includes/class-audit.php:362 Bastion/includes/class-audit.php:366 Bastion/includes/class-audit.php:374
 msgid "Content-Security-Policy"
 msgstr "Content-Security-Policy"
 
-#: Bastion/includes/class-admin.php:579
+#: Bastion/includes/class-admin.php:607
 msgid "Cross-Origin-Opener-Policy"
 msgstr "Cross-Origin-Opener-Policy"
 
-#: Bastion/includes/class-admin.php:537
+#: Bastion/includes/class-admin.php:565
 msgid "Custom"
 msgstr "Personnalisée"
 
-#: Bastion/includes/class-admin.php:606
+#: Bastion/includes/class-admin.php:634
 msgid "Custom SPF source"
 msgstr "Source SPF personnalisée"
 
-#: Bastion/includes/class-admin.php:543
+#: Bastion/includes/class-admin.php:571
 msgid "Custom policy"
 msgstr "Politique personnalisée"
 
-#: Bastion/includes/class-admin.php:677 Bastion/includes/class-audit.php:441
+#: Bastion/includes/class-admin.php:699 Bastion/includes/class-audit.php:487
 msgid "DKIM"
 msgstr "DKIM"
 
-#: Bastion/includes/class-admin.php:678
+#: Bastion/includes/class-admin.php:700
 msgid "DKIM is provider-specific: enable it in the mail provider’s console, publish the TXT record it gives you, and keep the private key where it is. No plugin can generate it for you."
 msgstr "DKIM dépend du fournisseur : activez-le dans la console du fournisseur, publiez l’enregistrement TXT qu’il vous donne, et laissez la clé privée là où elle est. Aucun plugin ne peut le générer à votre place."
 
-#: Bastion/includes/class-admin.php:620
+#: Bastion/includes/class-admin.php:648
 msgid "DMARC"
 msgstr "DMARC"
 
-#: Bastion/includes/class-audit.php:424 Bastion/includes/class-audit.php:426 Bastion/includes/class-audit.php:432
+#: Bastion/includes/class-audit.php:470 Bastion/includes/class-audit.php:472 Bastion/includes/class-audit.php:478
 msgid "DMARC published"
 msgstr "DMARC publié"
 
-#: Bastion/includes/class-admin.php:667
+#: Bastion/includes/class-admin.php:689
 msgid "DMARC — TXT record at _dmarc.%s"
 msgstr "DMARC — enregistrement TXT sur _dmarc.%s"
 
-#: Bastion/includes/class-audit.php:650
+#: Bastion/includes/class-audit.php:730
 msgid "Date"
 msgstr "Date"
 
-#: Bastion/includes/class-admin.php:454
+#: Bastion/includes/class-admin.php:482
 msgid "Delete all plugin data when the plugin is deleted"
 msgstr "Supprimer toutes les données du plugin lors de sa suppression"
 
-#: Bastion/includes/class-audit.php:519
+#: Bastion/includes/class-audit.php:579
 msgid "Delete readme.html, or let Bastion answer 404 for it."
 msgstr "Supprimez readme.html, ou laissez Bastion répondre 404 à sa place."
 
-#: Bastion/includes/class-admin.php:604
+#: Bastion/includes/class-admin.php:632
 msgid "Determines the SPF include. Pre-selected when the MX record matches a known provider."
 msgstr "Détermine l’include SPF. Présélectionné quand l’enregistrement MX correspond à un fournisseur connu."
 
-#: Bastion/includes/class-admin.php:578
+#: Bastion/includes/class-admin.php:606
 msgid "Disables a browser feature for the whole site. Empty to send nothing."
 msgstr "Désactive une fonctionnalité du navigateur pour tout le site. Vide pour n’envoyer aucun en-tête."
 
-#: Bastion/includes/class-admin.php:581 Bastion/includes/class-admin.php:698 Bastion/includes/class-audit.php:663
+#: Bastion/includes/class-admin.php:609 Bastion/includes/class-admin.php:720 Bastion/includes/class-audit.php:743
 msgid "Disclosures"
 msgstr "Divulgations"
 
-#: Bastion/includes/class-admin.php:121 Bastion/includes/class-admin.php:798
+#: Bastion/includes/class-admin.php:294
+msgid "Dismiss"
+msgstr "Ignorer"
+
+#: Bastion/includes/class-admin.php:122 Bastion/includes/class-admin.php:820
 msgid "Documentation"
 msgstr "Documentation"
 
-#: Bastion/includes/class-admin.php:600 Bastion/includes/class-admin.php:602 Bastion/includes/class-audit.php:389
+#: Bastion/includes/class-admin.php:628 Bastion/includes/class-admin.php:630 Bastion/includes/class-audit.php:435
 msgid "Domain"
 msgstr "Domaine"
 
-#: Bastion/includes/class-audit.php:397
+#: Bastion/includes/class-audit.php:443
 msgid "Domain checked"
 msgstr "Domaine vérifié"
 
-#: Bastion/includes/class-admin.php:721
+#: Bastion/includes/class-admin.php:743
 msgid "Download the report"
 msgstr "Télécharger le rapport"
 
-#: Bastion/includes/class-admin.php:472
+#: Bastion/includes/class-admin.php:500
 msgid "Dry run: log instead of redirect"
 msgstr "Mode à blanc : journaliser au lieu de rediriger"
 
-#: Bastion/includes/class-admin.php:379 Bastion/includes/class-admin.php:697 Bastion/includes/class-audit.php:662
+#: Bastion/includes/class-admin.php:407 Bastion/includes/class-admin.php:719 Bastion/includes/class-audit.php:742
 msgid "Email"
 msgstr "Messagerie"
 
-#: Bastion/includes/class-admin.php:458
+#: Bastion/includes/class-admin.php:486
 msgid "Emergency disable"
 msgstr "Désactivation d’urgence"
 
-#: Bastion/includes/class-admin.php:405
+#: Bastion/includes/class-admin.php:433
 msgid "Enable Bastion"
 msgstr "Activer Bastion"
 
-#: Bastion/includes/class-audit.php:444
+#: Bastion/includes/class-audit.php:490
 msgid "Enable DKIM in your mail provider, then keep the key it gives you."
 msgstr "Activez DKIM chez votre fournisseur, puis conservez la clé qu’il vous donne."
 
-#: Bastion/includes/class-admin.php:610
+#: Bastion/includes/class-admin.php:638
 msgid "End of the SPF record"
 msgstr "Fin de l’enregistrement SPF"
 
-#: Bastion/includes/class-admin.php:525
+#: Bastion/includes/class-admin.php:553
 msgid "Enforce"
 msgstr "Appliquer (bloquant)"
 
-#: Bastion/includes/class-admin.php:507
+#: Bastion/includes/class-admin.php:535
 msgid "Every subdomain must then serve HTTPS — including the ones you have forgotten."
 msgstr "Chaque sous-domaine doit alors servir du HTTPS — y compris ceux que vous avez oubliés."
 
-#: Bastion/includes/class-admin.php:731 Bastion/includes/class-audit.php:668
+#: Bastion/includes/class-admin.php:753 Bastion/includes/class-audit.php:748
 msgid "Evidence"
 msgstr "Preuve"
 
-#: Bastion/includes/class-audit.php:348
+#: Bastion/includes/class-audit.php:394
 msgid "File types locked (nosniff)"
 msgstr "Types de fichiers verrouillés (nosniff)"
 
@@ -326,115 +330,123 @@ msgstr "Types de fichiers verrouillés (nosniff)"
 msgid "Forces HTTPS, sets the security headers, closes the version leaks and audits the result on the live site — with nothing applied until you ask."
 msgstr "Force le HTTPS, pose les en-têtes de sécurité, ferme les fuites de version et audite le résultat sur le site en ligne — rien n’est appliqué tant que vous ne le demandez pas."
 
-#: Bastion/includes/class-admin.php:550
+#: Bastion/includes/class-admin.php:578
 msgid "Framing and the rest"
 msgstr "Encadrement et le reste"
 
-#: Bastion/includes/class-admin.php:514
+#: Bastion/includes/class-admin.php:542
 msgid "Framing, MIME sniffing, referrer, permissions and the policy below."
 msgstr "Encadrement, reniflage MIME, referrer, permissions et la politique ci-dessous."
 
-#: Bastion/includes/class-admin.php:497
+#: Bastion/includes/class-admin.php:525
 msgid "HSTS"
 msgstr "HSTS"
 
-#: Bastion/includes/class-audit.php:295
+#: Bastion/includes/class-audit.php:324
 msgid "HSTS is set"
 msgstr "HSTS est posé"
 
-#: Bastion/includes/class-admin.php:377 Bastion/includes/class-admin.php:695 Bastion/includes/class-audit.php:660
+#: Bastion/includes/class-admin.php:405 Bastion/includes/class-admin.php:717 Bastion/includes/class-audit.php:740
 msgid "HTTPS"
 msgstr "HTTPS"
 
-#: Bastion/includes/class-audit.php:264
+#: Bastion/includes/class-audit.php:274
 msgid "HTTPS answers"
 msgstr "Le HTTPS répond"
 
-#: Bastion/includes/class-admin.php:358
+#: Bastion/includes/class-admin.php:386
 msgid "HTTPS, security headers, a domain that cannot be spoofed, and a report that proves it — measured on the live site, and reversible at every step."
 msgstr "HTTPS, en-têtes de sécurité, un domaine qui ne peut pas être usurpé, et un rapport qui le prouve — mesuré sur le site en ligne, et réversible à chaque étape."
 
-#: Bastion/includes/class-admin.php:378 Bastion/includes/class-admin.php:696 Bastion/includes/class-audit.php:661
+#: Bastion/includes/class-admin.php:406 Bastion/includes/class-admin.php:718 Bastion/includes/class-audit.php:741
 msgid "Headers"
 msgstr "En-têtes"
 
-#: Bastion/includes/class-admin.php:449 Bastion/includes/class-admin.php:776
+#: Bastion/includes/class-admin.php:477 Bastion/includes/class-admin.php:798
 msgid "Housekeeping"
 msgstr "Entretien"
 
-#: Bastion/includes/class-audit.php:269
+#: Bastion/includes/class-audit.php:279
 msgid "If the site has no certificate yet, this check cannot pass. Nothing is changed by the plugin until it does."
 msgstr "Si le site n’a pas encore de certificat, ce contrôle ne peut pas réussir. Le plugin ne change rien tant que c’est le cas."
 
-#: Bastion/includes/class-admin.php:507
+#: Bastion/includes/class-admin.php:535
 msgid "Include subdomains"
 msgstr "Inclure les sous-domaines"
 
-#: Bastion/includes/class-admin.php:579
+#: Bastion/includes/class-admin.php:607
 msgid "Isolates the page from the windows it opens. Off by default: it breaks pop-up based sign-in (OAuth, some payment providers)."
 msgstr "Isole la page des fenêtres qu’elle ouvre. Désactivé par défaut : cela casse les connexions par fenêtre surgissante (OAuth, certains prestataires de paiement)."
 
-#: Bastion/includes/class-admin.php:263
+#: Bastion/includes/class-admin.php:290
 msgid "It measures and reports; nothing on the front end has been changed. Read the report, then switch to “Apply” when the failures make sense to you."
 msgstr "Il mesure et rapporte ; rien n’a été changé sur le front. Lisez le rapport, puis passez à « Appliquer » quand les échecs vous paraissent cohérents."
 
-#: Bastion/includes/class-admin.php:423
+#: Bastion/includes/class-admin.php:451
 msgid "It never edits wp-config.php, .htaccess or the theme. It never touches the database schema. It writes no file. Everything it does is a response header, a redirect, or a filter — and deactivating restores the previous behaviour instantly."
 msgstr "Il ne modifie jamais wp-config.php, .htaccess ni le thème. Il ne touche pas au schéma de la base. Il n’écrit aucun fichier. Tout ce qu’il fait est un en-tête de réponse, une redirection ou un filtre — et la désactivation rétablit le comportement précédent instantanément."
 
-#: Bastion/includes/class-admin.php:453
+#: Bastion/includes/class-admin.php:481
 msgid "Keep a small activity log"
 msgstr "Tenir un petit journal d’activité"
 
-#: Bastion/includes/class-admin.php:472
+#: Bastion/includes/class-admin.php:500
 msgid "Keep this on for a day: the log shows what would have been redirected, and nothing breaks if the certificate is not ready."
 msgstr "Laissez-le activé une journée : le journal montre ce qui aurait été redirigé, et rien ne casse si le certificat n’est pas prêt."
 
-#: Bastion/includes/class-admin.php:426
+#: Bastion/includes/class-admin.php:454
 msgid "Last measurement"
 msgstr "Dernière mesure"
 
-#: Bastion/includes/class-admin.php:602
+#: Bastion/includes/class-admin.php:630
 msgid "Leave empty to use the site host."
 msgstr "Laissez vide pour utiliser l’hôte du site."
 
-#: Bastion/includes/class-audit.php:361
+#: Bastion/includes/class-audit.php:407
 msgid "Limits what the browser tells other sites about your URLs."
 msgstr "Limite ce que le navigateur dit aux autres sites au sujet de vos URL."
 
-#: Bastion/includes/class-admin.php:604
+#: Bastion/includes/class-audit.php:311
+msgid "Login screen is not served in clear text"
+msgstr "L’écran de connexion n’est pas servi en clair"
+
+#: Bastion/includes/class-admin.php:632
 msgid "Mail provider"
 msgstr "Fournisseur de messagerie"
 
-#: Bastion/includes/class-admin.php:750
+#: Bastion/includes/class-admin.php:772
 msgid "Markdown — copy it into an e-mail, a ticket or a client report"
 msgstr "Markdown — à copier dans un e-mail, un ticket ou un rapport client"
 
-#: Bastion/includes/class-admin.php:506
+#: Bastion/includes/class-admin.php:534
 msgid "Max-age (seconds)"
 msgstr "Max-age (secondes)"
 
-#: Bastion/includes/class-admin.php:407 Bastion/includes/class-admin.php:520
+#: Bastion/includes/class-audit.php:554
+msgid "Mixed content only exists on an HTTPS page. Move the site to HTTPS first."
+msgstr "Le contenu mixte n’existe que sur une page HTTPS. Faites d’abord passer le site en HTTPS."
+
+#: Bastion/includes/class-admin.php:435 Bastion/includes/class-admin.php:548
 msgid "Mode"
 msgstr "Mode"
 
-#: Bastion/includes/class-audit.php:417
+#: Bastion/includes/class-audit.php:463
 msgid "More than 10 DNS lookups: the record may be ignored by receivers."
 msgstr "Plus de 10 requêtes DNS : l’enregistrement peut être ignoré par les destinataires."
 
-#: Bastion/includes/class-admin.php:654
+#: Bastion/includes/class-admin.php:679
 msgid "Name: @ — Type: TXT — Value above. One SPF record per domain, never two."
 msgstr "Nom : @ — Type : TXT — Valeur ci-dessus. Un seul enregistrement SPF par domaine, jamais deux."
 
-#: Bastion/includes/class-admin.php:442
+#: Bastion/includes/class-admin.php:470
 msgid "No audit has run yet. It is a read-only measurement: run it now, nothing will be changed."
 msgstr "Aucun audit n’a encore tourné. C’est une mesure en lecture seule : lancez-la, rien ne sera changé."
 
-#: Bastion/includes/class-admin.php:684
+#: Bastion/includes/class-admin.php:706
 msgid "No measurement yet"
 msgstr "Aucune mesure pour l’instant"
 
-#: Bastion/includes/class-audit.php:498
+#: Bastion/includes/class-audit.php:547 Bastion/includes/class-audit.php:551 Bastion/includes/class-audit.php:559
 msgid "No mixed content"
 msgstr "Aucun contenu mixte"
 
@@ -442,494 +454,514 @@ msgstr "Aucun contenu mixte"
 msgid "Not found."
 msgstr "Introuvable."
 
-#: Bastion/includes/class-admin.php:398
+#: Bastion/includes/class-admin.php:426
 msgid "Nothing is being changed: Bastion measures the site and reports. Switch to “Apply” when you are ready."
 msgstr "Rien n’est modifié : Bastion mesure le site et rapporte. Passez à « Appliquer » quand vous êtes prêt."
 
-#: Bastion/includes/class-admin.php:760
+#: Bastion/includes/class-admin.php:782
 msgid "Nothing logged yet. Bastion records what it did — a redirect it made, a file it blocked, a setting you saved."
 msgstr "Rien dans le journal. Bastion note ce qu’il a fait — une redirection, un fichier bloqué, un réglage enregistré."
 
-#: Bastion/includes/class-admin.php:354 Bastion/includes/class-admin.php:523 Bastion/includes/class-admin.php:559
+#: Bastion/includes/class-admin.php:382 Bastion/includes/class-admin.php:551 Bastion/includes/class-admin.php:587
 msgid "Off"
 msgstr "Non"
 
-#: Bastion/includes/class-admin.php:471
-msgid "Off by default. Only GET and HEAD are redirected: redirecting a POST silently turns it into a GET and loses the form."
-msgstr "Désactivé par défaut. Seuls GET et HEAD sont redirigés : rediriger un POST le transforme silencieusement en GET et perd le formulaire."
+#: Bastion/includes/class-admin.php:499
+msgid "Off by default. Covers every front-end page and the login screen, including the password reset. Only GET and HEAD are redirected — a POST is never touched, because a 301 would turn it into a GET and silently lose the body of the form. The REST API and admin-ajax.php answer before this hook runs, so a JSON client is never bounced through a redirect. The port is kept, so a site on 8443 stays on 8443."
+msgstr "Désactivé par défaut. Couvre toutes les pages du site et l’écran de connexion, réinitialisation du mot de passe comprise. Seuls GET et HEAD sont redirigés — un POST n’est jamais touché, car un 301 le transformerait en GET et perdrait silencieusement le formulaire. Les points d’API (REST, admin-ajax) sont laissés intacts volontairement : un client JSON ne suit pas une redirection comme un navigateur, et la transformer en GET le casse."
 
-#: Bastion/includes/class-admin.php:405
+#: Bastion/includes/class-admin.php:433
 msgid "Off removes every header, every redirect and every change, without touching a single option."
 msgstr "Désactivé, cela retire chaque en-tête, chaque redirection et chaque changement, sans toucher à une seule option."
 
-#: Bastion/includes/class-admin.php:494
+#: Bastion/includes/class-admin.php:522
 msgid "One address or CIDR range per line. The forwarded scheme is only read when the direct peer is on this list — otherwise any visitor could claim to be on HTTPS."
 msgstr "Une adresse ou une plage CIDR par ligne. Le schéma transmis n’est lu que si le pair direct figure dans cette liste — sinon n’importe quel visiteur pourrait prétendre être en HTTPS."
 
-#: Bastion/includes/class-admin.php:508
+#: Bastion/includes/class-admin.php:536
 msgid "Only meaningful once the domain is submitted to the browser preload list. It requires “include subdomains”."
 msgstr "N’a de sens qu’une fois le domaine soumis à la liste de préchargement des navigateurs. Cela exige « inclure les sous-domaines »."
 
-#: Bastion/includes/class-admin.php:505
+#: Bastion/includes/class-admin.php:533
 msgid "Only sent over HTTPS. Off by default, and it cannot be undone quickly once browsers have seen it."
 msgstr "Envoyé uniquement en HTTPS. Désactivé par défaut, et il ne peut pas être annulé rapidement une fois que les navigateurs l’ont vu."
 
-#: Bastion/includes/class-admin.php:489
+#: Bastion/includes/class-admin.php:517
 msgid "Only when a CDN or a load balancer terminates TLS in front of the site. Without it, redirecting every request would loop for ever."
 msgstr "Uniquement quand un CDN ou un répartiteur de charge termine le TLS devant le site. Sans cela, rediriger chaque requête boucherait indéfiniment."
 
-#: Bastion/includes/class-admin.php:266
+#: Bastion/includes/class-admin.php:293
 msgid "Open the report"
 msgstr "Ouvrir le rapport"
 
-#: Bastion/includes/class-audit.php:370
+#: Bastion/includes/class-audit.php:416
 msgid "Optional: disables camera, microphone and geolocation for the whole site."
 msgstr "Optionnel : désactive la caméra, le micro et la géolocalisation pour tout le site."
 
-#: Bastion/includes/class-admin.php:454
+#: Bastion/includes/class-admin.php:482
 msgid "Options, log and transients are removed. The plugin does nothing until you delete it."
 msgstr "Options, journal et transients sont supprimés. Le plugin ne fait rien avant que vous ne le supprimiez."
 
-#: Bastion/includes/class-admin.php:461
+#: Bastion/includes/class-admin.php:489
 msgid "Or use WP-CLI:"
 msgstr "Ou avec WP-CLI :"
 
-#: Bastion/includes/class-admin.php:606
+#: Bastion/includes/class-admin.php:634
 msgid "Overrides the provider, for a relay that is not listed."
 msgstr "Remplace le fournisseur, pour un relais qui n’est pas dans la liste."
 
-#: Bastion/includes/class-admin.php:376
+#: Bastion/includes/class-admin.php:404
 msgid "Overview"
 msgstr "Vue d’ensemble"
 
-#: Bastion/includes/class-admin.php:635
+#: Bastion/includes/class-admin.php:663
 msgid "Percentage"
 msgstr "Pourcentage"
 
-#: Bastion/includes/class-audit.php:366
+#: Bastion/includes/class-audit.php:412
 msgid "Permissions policy"
 msgstr "Politique de permissions"
 
-#: Bastion/includes/class-admin.php:578
+#: Bastion/includes/class-admin.php:606
 msgid "Permissions-Policy"
 msgstr "Permissions-Policy"
 
-#: Bastion/includes/class-admin.php:532 Bastion/includes/class-admin.php:624
+#: Bastion/includes/class-admin.php:560 Bastion/includes/class-admin.php:652
 msgid "Policy"
 msgstr "Politique"
 
-#: Bastion/includes/class-audit.php:408 Bastion/includes/class-audit.php:426
+#: Bastion/includes/class-audit.php:454 Bastion/includes/class-audit.php:472
 msgid "Publish the record below at your registrar."
 msgstr "Publiez l’enregistrement ci-dessous chez votre registrar."
 
-#: Bastion/includes/class-admin.php:500
+#: Bastion/includes/class-audit.php:369
+msgid "Read the violations in the browser console, then switch the mode to “Enforce”."
+msgstr "Lisez les violations dans la console du navigateur, puis passez le mode à « Appliquer »."
+
+#: Bastion/includes/class-admin.php:528
 msgid "Read this before switching HSTS on"
 msgstr "À lire avant d’activer HSTS"
 
-#: Bastion/includes/class-admin.php:634
+#: Bastion/includes/class-admin.php:662
 msgid "Receives the aggregate reports. A dedicated address is cleaner than a mailbox you read."
 msgstr "Reçoit les rapports agrégés. Une adresse dédiée est plus propre qu’une boîte que vous lisez."
 
-#: Bastion/includes/class-admin.php:469
+#: Bastion/includes/class-admin.php:497
 msgid "Redirect"
 msgstr "Redirection"
 
-#: Bastion/includes/class-admin.php:566 Bastion/includes/class-audit.php:357
+#: Bastion/includes/class-admin.php:594 Bastion/includes/class-audit.php:403
 msgid "Referrer policy"
 msgstr "Politique de referrer"
 
-#: Bastion/includes/class-admin.php:585
+#: Bastion/includes/class-admin.php:613
 msgid "Remove RSD and WLW manifest links"
 msgstr "Retirer les liens RSD et WLW manifest"
 
-#: Bastion/includes/class-admin.php:587
+#: Bastion/includes/class-admin.php:615
 msgid "Remove X-Pingback"
 msgstr "Retirer X-Pingback"
 
-#: Bastion/includes/class-admin.php:588
+#: Bastion/includes/class-admin.php:616
 msgid "Remove X-Powered-By"
 msgstr "Retirer X-Powered-By"
 
-#: Bastion/includes/class-admin.php:586
+#: Bastion/includes/class-admin.php:614
 msgid "Remove shortlink"
 msgstr "Retirer le shortlink"
 
-#: Bastion/includes/class-admin.php:584
+#: Bastion/includes/class-admin.php:612
 msgid "Remove the ?ver= version"
 msgstr "Retirer la version du ?ver="
 
-#: Bastion/includes/class-admin.php:583
+#: Bastion/includes/class-admin.php:611
 msgid "Remove the generator meta"
 msgstr "Retirer la balise generator"
 
-#: Bastion/includes/class-admin.php:586
+#: Bastion/includes/class-admin.php:614
 msgid "Removes the shortlink tag and header."
 msgstr "Retire la balise et l’en-tête shortlink."
 
-#: Bastion/includes/class-admin.php:634
+#: Bastion/includes/class-admin.php:662
 msgid "Report address"
 msgstr "Adresse de rapport"
 
-#: Bastion/includes/class-admin.php:548
+#: Bastion/includes/class-admin.php:576
 msgid "Report endpoint (optional)"
 msgstr "Point d’envoi des rapports (optionnel)"
 
-#: Bastion/includes/class-admin.php:524
+#: Bastion/includes/class-admin.php:552
 msgid "Report only — nothing is blocked"
 msgstr "Rapport seul — rien n’est bloqué"
 
-#: Bastion/includes/class-admin.php:527
-msgid "Report-only makes the browser report what it would have blocked, without blocking it: it is the only honest way to build a policy on a site you did not write."
-msgstr "Le mode rapport demande au navigateur de signaler ce qu’il aurait bloqué, sans le bloquer : c’est la seule façon honnête de construire une politique sur un site que vous n’avez pas écrit."
+#: Bastion/includes/class-admin.php:555
+msgid "Report-only makes the browser report what it would have blocked, without blocking it: it is the only honest way to build a policy on a site you did not write. The policy covers wp-admin too, so test it in report-only before enforcing anything strict."
+msgstr "Le mode rapport demande au navigateur de signaler ce qu’il aurait bloqué, sans le bloquer : c’est la seule façon honnête de construire une politique sur un site que vous n’avez pas écrit. La politique couvre aussi wp-admin : testez-la en mode rapport avant d’appliquer quoi que ce soit de strict."
 
-#: Bastion/includes/class-audit.php:651
+#: Bastion/includes/class-audit.php:731
 msgid "Result"
 msgstr "Résultat"
 
-#: Bastion/includes/class-admin.php:689
+#: Bastion/includes/class-admin.php:711
 msgid "Run the audit"
 msgstr "Lancer l’audit"
 
-#: Bastion/includes/class-admin.php:720
+#: Bastion/includes/class-admin.php:742
 msgid "Run the audit again"
 msgstr "Relancer l’audit"
 
-#: Bastion/includes/class-admin.php:446
+#: Bastion/includes/class-admin.php:474
 msgid "Run the audit now"
 msgstr "Lancer l’audit maintenant"
 
-#: Bastion/includes/class-admin.php:596
+#: Bastion/includes/class-admin.php:624
 msgid "SPF and DMARC are TXT records published at your registrar. Bastion writes the exact records for your domain, and reads back what is actually published — but you (or your host) have to paste them."
 msgstr "SPF et DMARC sont des enregistrements TXT publiés chez votre registrar. Bastion écrit les enregistrements exacts pour votre domaine, et relit ce qui est réellement publié — mais c’est à vous (ou à votre hébergeur) de les coller."
 
-#: Bastion/includes/class-audit.php:406 Bastion/includes/class-audit.php:408 Bastion/includes/class-audit.php:414
+#: Bastion/includes/class-audit.php:452 Bastion/includes/class-audit.php:454 Bastion/includes/class-audit.php:460
 msgid "SPF published"
 msgstr "SPF publié"
 
-#: Bastion/includes/class-admin.php:645
+#: Bastion/includes/class-admin.php:673
 msgid "SPF — TXT record at the domain"
 msgstr "SPF — enregistrement TXT sur le domaine"
 
-#: Bastion/includes/class-admin.php:535
+#: Bastion/includes/class-admin.php:563
 msgid "Safe — framing, base URI, plugins, forms"
 msgstr "Sûre — encadrement, base URI, plugins, formulaires"
 
-#: Bastion/includes/class-admin.php:782
+#: Bastion/includes/class-admin.php:804
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
-#: Bastion/includes/class-audit.php:503
+#: Bastion/includes/class-audit.php:562
 msgid "Search the theme and the plugins for http:// URLs, or the database if they come from the content."
 msgstr "Cherchez des URL http:// dans le thème et les plugins, ou dans la base si elles viennent du contenu."
 
-#: Bastion/includes/class-audit.php:648
+#: Bastion/includes/class-audit.php:728
 msgid "Security audit"
 msgstr "Audit de sécurité"
 
-#: Bastion/includes/class-admin.php:505
+#: Bastion/includes/class-admin.php:533
 msgid "Send Strict-Transport-Security"
 msgstr "Envoyer Strict-Transport-Security"
 
-#: Bastion/includes/class-admin.php:471
+#: Bastion/includes/class-admin.php:499
 msgid "Send clear-text requests to HTTPS"
 msgstr "Envoyer les requêtes en clair vers HTTPS"
 
-#: Bastion/includes/class-admin.php:514
+#: Bastion/includes/class-admin.php:542
 msgid "Send security headers"
 msgstr "Envoyer les en-têtes de sécurité"
 
-#: Bastion/includes/class-audit.php:467
+#: Bastion/includes/class-audit.php:513
 msgid "Server version hidden"
 msgstr "Version du serveur masquée"
 
-#: Bastion/includes/class-admin.php:102
+#: Bastion/includes/class-admin.php:103
 msgid "Settings"
 msgstr "Réglages"
 
-#: Bastion/includes/class-admin.php:245
+#: Bastion/includes/class-admin.php:272
 msgid "Settings saved."
 msgstr "Réglages enregistrés."
 
-#: Bastion/includes/class-audit.php:389
+#: Bastion/includes/class-audit.php:435
 msgid "Settings → Email."
 msgstr "Réglages → Messagerie."
 
-#: Bastion/includes/class-audit.php:257
+#: Bastion/includes/class-audit.php:267
 msgid "Settings → General: put https:// in both fields."
 msgstr "Réglages → Général : mettez https:// dans les deux champs."
 
-#: Bastion/includes/class-admin.php:635
+#: Bastion/includes/class-admin.php:663
 msgid "Share of the messages the policy applies to. Raise it once the reports are clean."
 msgstr "Part des messages auxquels la politique s’applique. Augmentez-la quand les rapports sont propres."
 
-#: Bastion/includes/class-audit.php:649
+#: Bastion/includes/class-audit.php:729
 msgid "Site"
 msgstr "Site"
 
-#: Bastion/includes/class-audit.php:254
+#: Bastion/includes/class-audit.php:264
 msgid "Site address uses HTTPS"
 msgstr "L’adresse du site utilise HTTPS"
 
-#: Bastion/includes/class-admin.php:673
+#: Bastion/includes/class-admin.php:695
 msgid "Start with p=none, read the reports for a fortnight, then move to quarantine and finally reject."
 msgstr "Commencez par p=none, lisez les rapports quinze jours, puis passez à quarantine et enfin à reject."
 
-#: Bastion/includes/class-admin.php:617
+#: Bastion/includes/class-admin.php:645
 msgid "Start with ~all, read a week of reports, then move to -all."
 msgstr "Commencez par ~all, lisez une semaine de rapports, puis passez à -all."
 
-#: Bastion/includes/class-admin.php:730 Bastion/includes/class-audit.php:668
+#: Bastion/includes/class-admin.php:752 Bastion/includes/class-audit.php:748
 msgid "Status"
 msgstr "Statut"
 
-#: Bastion/includes/class-admin.php:476
+#: Bastion/includes/class-admin.php:504
 msgid "Status code"
 msgstr "Code de statut"
 
-#: Bastion/includes/class-admin.php:575
+#: Bastion/includes/class-admin.php:603
 msgid "Stops a URL that contains a token from leaking to an external site through the Referer header."
 msgstr "Empêche une URL contenant un jeton de fuiter vers un site externe via l’en-tête Referer."
 
-#: Bastion/includes/class-audit.php:352
+#: Bastion/includes/class-audit.php:398
 msgid "Stops a browser from running an uploaded file as a script."
 msgstr "Empêche un navigateur d’exécuter un fichier téléversé comme un script."
 
-#: Bastion/includes/class-admin.php:583
+#: Bastion/includes/class-admin.php:611
 msgid "Stops the page from announcing the WordPress version."
 msgstr "Empêche la page d’annoncer la version de WordPress."
 
-#: Bastion/includes/class-admin.php:536
+#: Bastion/includes/class-admin.php:564
 msgid "Strict — everything from the same origin"
 msgstr "Stricte — tout depuis la même origine"
 
-#: Bastion/includes/class-admin.php:561
+#: Bastion/includes/class-admin.php:589
 msgid "The CSP frame-ancestors directive is kept consistent with this choice, so the two can never contradict each other."
 msgstr "La directive CSP frame-ancestors reste cohérente avec ce choix, pour que les deux ne puissent jamais se contredire."
 
-#: Bastion/includes/class-admin.php:686
+#: Bastion/includes/class-admin.php:708
 msgid "The audit fetches the site’s own pages and reads the real response headers, then queries DNS. It changes nothing. Run it to get the evidence."
 msgstr "L’audit récupère les pages du site et lit les en-têtes réellement renvoyés, puis interroge le DNS. Il ne change rien. Lancez-le pour obtenir les preuves."
 
-#: Bastion/includes/class-admin.php:439
+#: Bastion/includes/class-admin.php:467
 msgid "The full evidence is on the Audit tab."
 msgstr "Les preuves complètes sont dans l’onglet Audit."
 
-#: Bastion/includes/class-admin.php:453
+#: Bastion/includes/class-admin.php:481
 msgid "The last 30 events, with no visitor address."
 msgstr "Les 30 derniers événements, sans adresse de visiteur."
 
-#: Bastion/includes/class-admin.php:777
+#: Bastion/includes/class-admin.php:799
 msgid "The log keeps the last 30 events, with no visitor address and no personal data."
 msgstr "Le journal garde les 30 derniers événements, sans adresse de visiteur ni donnée personnelle."
 
-#: Bastion/includes/class-admin.php:638
+#: Bastion/includes/class-audit.php:316
+msgid "The page that carries a password must be covered too: switch on {force https}, or add a server-level redirect."
+msgstr "La page qui porte un mot de passe doit être couverte aussi : activez {forcer HTTPS}, ou ajoutez une redirection au niveau du serveur."
+
+#: Bastion/includes/class-admin.php:666
 msgid "The records to publish"
 msgstr "Les enregistrements à publier"
 
-#: Bastion/includes/class-admin.php:748
+#: Bastion/includes/class-admin.php:770
 msgid "The same report, as text"
 msgstr "Le même rapport, en texte"
 
-#: Bastion/includes/class-admin.php:397
+#: Bastion/includes/class-admin.php:425
 msgid "The switches below are live on the front end."
 msgstr "Les interrupteurs ci-dessous sont actifs sur le front."
 
-#: Bastion/includes/class-admin.php:584
+#: Bastion/includes/class-admin.php:612
 msgid "The version is replaced by a hash of the file, so caches still refresh when a file changes."
 msgstr "La version est remplacée par une empreinte du fichier : les caches se rafraîchissent toujours quand un fichier change."
 
-#: Bastion/includes/class-admin.php:489
+#: Bastion/includes/class-admin.php:517
 msgid "Trust reverse-proxy headers"
 msgstr "Faire confiance aux en-têtes du proxy inverse"
 
-#: Bastion/includes/class-admin.php:492
+#: Bastion/includes/class-admin.php:520
 msgid "Trusted proxy addresses"
 msgstr "Adresses des proxies de confiance"
 
-#: Bastion/includes/class-admin.php:585
+#: Bastion/includes/class-admin.php:613
 msgid "Two legacy discovery links that no current client uses."
 msgstr "Deux liens de découverte hérités qu’aucun client actuel n’utilise."
 
-#: Bastion/includes/class-admin.php:545
+#: Bastion/includes/class-admin.php:573
 msgid "Used when “Custom” is chosen above. One line; report-uri is appended automatically if you set one below."
 msgstr "Utilisée quand « Personnalisée » est choisi ci-dessus. Une seule ligne ; report-uri est ajouté automatiquement si vous en définissez un plus bas."
 
-#: Bastion/includes/class-admin.php:411
+#: Bastion/includes/class-admin.php:439
 msgid "What Bastion may do"
 msgstr "Ce que Bastion a le droit de faire"
 
-#: Bastion/includes/class-admin.php:422
+#: Bastion/includes/class-admin.php:450
 msgid "What this plugin never does"
 msgstr "Ce que ce plugin ne fait jamais"
 
-#: Bastion/includes/class-admin.php:732
+#: Bastion/includes/class-admin.php:754
 msgid "What to do"
 msgstr "Que faire"
 
-#: Bastion/includes/class-audit.php:341
+#: Bastion/includes/class-audit.php:387
 msgid "Without it, the site can be framed and overlaid with a fake form."
 msgstr "Sans cela, le site peut être encadré et recouvert d’un faux formulaire."
 
-#: Bastion/includes/class-audit.php:477
+#: Bastion/includes/class-audit.php:523
 msgid "WordPress version hidden"
 msgstr "Version de WordPress masquée"
 
-#: Bastion/includes/class-admin.php:589
+#: Bastion/includes/class-admin.php:617
 msgid "Works when the request reaches WordPress. A web server that serves the file directly must have it deleted or blocked in its configuration — the audit reports what actually happens. Only readme.html, license.txt and wp-config-sample.php at the root are touched."
 msgstr "Fonctionne quand la requête atteint WordPress. Un serveur web qui sert le fichier directement doit le voir supprimé ou bloqué dans sa configuration — l’audit rapporte ce qui se passe réellement. Seuls readme.html, license.txt et wp-config-sample.php à la racine sont touchés."
 
-#: Bastion/includes/class-admin.php:131 Bastion/includes/class-admin.php:212
+#: Bastion/includes/class-admin.php:132 Bastion/includes/class-admin.php:213 Bastion/includes/class-admin.php:241
 msgid "You are not allowed to change these settings."
 msgstr "Vous n’êtes pas autorisé à modifier ces réglages."
 
-#: Bastion/includes/class-admin.php:191
+#: Bastion/includes/class-admin.php:192
 msgid "You are not allowed to download the report."
 msgstr "Vous n’êtes pas autorisé à télécharger le rapport."
 
-#: Bastion/includes/class-admin.php:166
+#: Bastion/includes/class-admin.php:167
 msgid "You are not allowed to run the audit."
 msgstr "Vous n’êtes pas autorisé à lancer l’audit."
 
-#: Bastion/includes/class-admin.php:271
+#: Bastion/includes/class-admin.php:299
 msgid "a plugin by %1$s, dev by %2$s"
 msgstr "un plugin de %1$s, développement par %2$s"
 
-#: Bastion/includes/class-audit.php:501
+#: Bastion/includes/class-audit.php:547
 msgid "could not read the page"
 msgstr "impossible de lire la page"
 
-#: Bastion/includes/class-admin.php:120
+#: Bastion/includes/class-admin.php:121
 msgid "dev by zigmoon"
 msgstr "développé par zigmoon"
 
-#: Bastion/includes/class-audit.php:502
+#: Bastion/includes/class-audit.php:561
 msgid "every resource is loaded over HTTPS"
 msgstr "toutes les ressources sont chargées en HTTPS"
 
-#: Bastion/includes/class-admin.php:434 Bastion/includes/class-admin.php:705
+#: Bastion/includes/class-admin.php:462 Bastion/includes/class-admin.php:727
 msgid "failed"
 msgstr "en échec"
 
-#: Bastion/includes/class-audit.php:578
+#: Bastion/includes/class-audit.php:376 Bastion/includes/class-audit.php:638
 msgid "header absent"
 msgstr "en-tête absent"
 
-#: Bastion/includes/class-audit.php:285
+#: Bastion/includes/class-audit.php:295
 msgid "http:// does not answer at all — the plaintext port is closed"
 msgstr "http:// ne répond pas du tout — le port en clair est fermé"
 
-#: Bastion/includes/class-admin.php:712
+#: Bastion/includes/class-admin.php:734
 msgid "measured %s UTC"
 msgstr "mesuré le %s UTC"
 
-#: Bastion/includes/class-audit.php:479
+#: Bastion/includes/class-audit.php:525
 msgid "no <meta name=\"generator\">"
 msgstr "aucune balise <meta name=\"generator\">"
 
-#: Bastion/includes/class-audit.php:489
+#: Bastion/includes/class-audit.php:535
 msgid "no ?ver=<core version> on the page"
 msgstr "aucun ?ver=<version du cœur> sur la page"
 
-#: Bastion/includes/class-audit.php:297
+#: Bastion/includes/class-audit.php:326
 msgid "no Strict-Transport-Security header"
 msgstr "aucun en-tête Strict-Transport-Security"
 
-#: Bastion/includes/class-audit.php:469
+#: Bastion/includes/class-audit.php:515
 msgid "no X-Powered-By header"
 msgstr "aucun en-tête X-Powered-By"
 
-#: Bastion/includes/class-audit.php:268
+#: Bastion/includes/class-audit.php:278
 msgid "no answer"
 msgstr "aucune réponse"
 
-#: Bastion/includes/class-audit.php:286
+#: Bastion/includes/class-audit.php:296 Bastion/includes/class-audit.php:315
 msgid "no redirect"
 msgstr "aucune redirection"
 
-#: Bastion/includes/class-audit.php:426
+#: Bastion/includes/class-audit.php:472
 msgid "no v=DMARC1 TXT record at _dmarc"
 msgstr "aucun enregistrement TXT v=DMARC1 sur _dmarc"
 
-#: Bastion/includes/class-audit.php:408
+#: Bastion/includes/class-audit.php:454
 msgid "no v=spf1 TXT record at the domain"
 msgstr "aucun enregistrement TXT v=spf1 sur le domaine"
 
-#: Bastion/includes/class-audit.php:443
+#: Bastion/includes/class-audit.php:553
+msgid "not applicable: the site itself is served over HTTP"
+msgstr "non applicable : le site lui-même est servi en HTTP"
+
+#: Bastion/includes/class-audit.php:489
 msgid "not checked: the selector is provider-specific"
 msgstr "non vérifié : le sélecteur dépend du fournisseur"
 
-#: Bastion/includes/class-audit.php:307
+#: Bastion/includes/class-audit.php:336
 msgid "not defined in wp-config.php"
 msgstr "non défini dans wp-config.php"
 
-#: Bastion/includes/class-audit.php:389
+#: Bastion/includes/class-audit.php:435
 msgid "not set"
 msgstr "non défini"
 
-#: Bastion/includes/class-admin.php:631
+#: Bastion/includes/class-admin.php:659
 msgid "p=none first, always: it collects the reports without affecting a single message. Move on once the reports show only legitimate senders."
 msgstr "p=none d’abord, toujours : cela collecte les rapports sans affecter un seul message. Avancez quand les rapports ne montrent plus que des expéditeurs légitimes."
 
-#: Bastion/includes/class-audit.php:435
+#: Bastion/includes/class-audit.php:481
 msgid "p=none only observes. Move to quarantine, then reject, once the reports are clean."
 msgstr "p=none observe seulement. Passez à quarantine, puis reject, quand les rapports sont propres."
 
-#: Bastion/includes/class-admin.php:627
+#: Bastion/includes/class-admin.php:655
 msgid "p=none — observe only"
 msgstr "p=none — observation seule"
 
-#: Bastion/includes/class-admin.php:628
+#: Bastion/includes/class-admin.php:656
 msgid "p=quarantine — send to spam"
 msgstr "p=quarantine — envoyer en indésirables"
 
-#: Bastion/includes/class-admin.php:629
+#: Bastion/includes/class-admin.php:657
 msgid "p=reject — refuse"
 msgstr "p=reject — refuser"
 
-#: Bastion/includes/class-admin.php:432 Bastion/includes/class-admin.php:703
+#: Bastion/includes/class-admin.php:460 Bastion/includes/class-admin.php:725
 msgid "passed"
 msgstr "réussis"
 
-#: Bastion/includes/class-admin.php:479
+#: Bastion/includes/class-admin.php:507
 msgid "permanent"
 msgstr "permanent"
 
-#: Bastion/includes/class-admin.php:481
+#: Bastion/includes/class-admin.php:509
 msgid "permanent, keeps the method"
 msgstr "permanent, conserve la méthode"
 
-#: Bastion/includes/class-audit.php:516
+#: Bastion/includes/class-audit.php:576
 msgid "readme.html is not served"
 msgstr "readme.html n’est pas servi"
 
-#: Bastion/includes/class-audit.php:469 Bastion/includes/class-audit.php:479 Bastion/includes/class-audit.php:489 Bastion/includes/class-audit.php:518 Bastion/includes/class-audit.php:578
+#: Bastion/includes/class-audit.php:368
+msgid "report-only, so nothing is blocked yet:"
+msgstr "rapport seul : rien n’est encore bloqué :"
+
+#: Bastion/includes/class-audit.php:376 Bastion/includes/class-audit.php:515 Bastion/includes/class-audit.php:525 Bastion/includes/class-audit.php:535 Bastion/includes/class-audit.php:578 Bastion/includes/class-audit.php:638
 msgid "site unreachable"
 msgstr "site injoignable"
 
-#: Bastion/includes/class-admin.php:480
+#: Bastion/includes/class-admin.php:508
 msgid "temporary"
 msgstr "temporaire"
 
-#: Bastion/includes/class-admin.php:482
+#: Bastion/includes/class-admin.php:510
 msgid "temporary, keeps the method"
 msgstr "temporaire, conserve la méthode"
 
-#: Bastion/includes/class-audit.php:406 Bastion/includes/class-audit.php:424
+#: Bastion/includes/class-audit.php:452 Bastion/includes/class-audit.php:470
 msgid "this host cannot query DNS"
 msgstr "cet hôte ne peut pas interroger le DNS"
 
-#: Bastion/includes/class-admin.php:436 Bastion/includes/class-admin.php:707
+#: Bastion/includes/class-admin.php:464 Bastion/includes/class-admin.php:729
 msgid "to review"
 msgstr "à surveiller"
 
-#: Bastion/includes/class-admin.php:366
+#: Bastion/includes/class-audit.php:314
+msgid "unreachable over http://"
+msgstr "injoignable en http://"
+
+#: Bastion/includes/class-admin.php:394
 msgid "v%s · PHP %s+ · WordPress %s+"
 msgstr "v%s · PHP %s+ · WordPress %s+"
 
-#: Bastion/includes/class-admin.php:613
+#: Bastion/includes/class-admin.php:641
 msgid "~all — soft fail (recommended to start)"
 msgstr "~all — échec souple (recommandé pour commencer)"
 
-#: Bastion/includes/class-admin.php:539
+#: Bastion/includes/class-admin.php:567
 msgid "“Safe” deliberately says nothing about scripts: it cannot break a page. “Strict” blocks every inline script and style, so keep it in report-only until the console is clean."
 msgstr "« Sûre » ne dit volontairement rien des scripts : elle ne peut pas casser une page. « Stricte » bloque chaque script et chaque style en ligne, donc gardez-la en mode rapport jusqu’à ce que la console soit propre."

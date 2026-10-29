@@ -20,8 +20,8 @@
 <p align="center">
   <img alt="WordPress 6.5 to 7.1" src="https://img.shields.io/badge/WordPress-6.5%20%E2%86%92%207.1-0b0d10?style=flat-square">
   <img alt="PHP 8.2 to 8.5" src="https://img.shields.io/badge/PHP-8.2%20%E2%86%92%208.5-0b0d10?style=flat-square">
-  <img alt="Version 1.0.0" src="https://img.shields.io/badge/version-1.0.0-0a66ff?style=flat-square">
-  <img alt="205 assertions" src="https://img.shields.io/badge/tests-205%20assertions-0b0d10?style=flat-square">
+  <img alt="Version 1.1.0" src="https://img.shields.io/badge/version-1.1.0-0a66ff?style=flat-square">
+  <img alt="226 assertions" src="https://img.shields.io/badge/tests-226%20assertions-0b0d10?style=flat-square">
   <img alt="Licence GPL-2.0-or-later" src="https://img.shields.io/badge/licence-GPL--2.0--or--later-0b0d10?style=flat-square">
 </p>
 
@@ -35,18 +35,18 @@ Measured on the local test install, before and after applying the policy:
 
 | | Passed | Failed | To review |
 |---|---|---|---|
-| Fresh install, audit mode | 0 | 15 | 2 |
-| After the switches are applied | **8** | 7 | 2 |
+| Fresh install, audit mode | 0 | 15 | 3 |
+| After the switches are applied | **9** | 5 | 4 |
 
-The seven remaining failures are the honest ones on a local sandbox: no certificate (so no TLS, no HSTS, no redirect), no DNS for `127.0.0.1` (so no SPF, no DMARC), and PHP's built-in server hands `readme.html` straight from disk without ever calling WordPress.
+The five remaining failures are the honest ones on a local sandbox: no certificate (so no TLS, no HSTS), no DNS for `127.0.0.1` (so no SPF, no DMARC), and PHP's built-in server hands `readme.html` straight from disk without ever calling WordPress.
 
 ## What it does
 
-**HTTPS** — redirect clear text to TLS with the status code you choose, behind a proxy you declare trusted. A **dry run** logs what would have been redirected instead of redirecting it, and only `GET` and `HEAD` are ever redirected: a 301 on a POST silently turns it into a GET and loses the form.
+**HTTPS** — redirect clear text to TLS with the status code you choose, behind a proxy you declare trusted. A **dry run** logs what would have been redirected instead of redirecting it, and only `GET` and `HEAD` are ever redirected: a 301 on a POST silently turns it into a GET and loses the form. The login screen is covered too — `wp-login.php` is a standalone file that never fires `template_redirect`, so it gets its own hook, because leaving it out would leave the one page that carries a password in clear text. The port is kept: a site served on `8443` is not sent to `443`, where nothing is listening.
 
 **HSTS** — `Strict-Transport-Security` with a max-age you control, `includeSubDomains` and `preload` as separate, deliberate choices. Off by default, because a browser that has seen it refuses plain HTTP for the whole max-age even if you remove the header afterwards.
 
-**Headers** — Content-Security-Policy (report-only by default), `X-Frame-Options` kept consistent with the CSP `frame-ancestors` directive, `X-Content-Type-Options: nosniff` to lock file types, `Referrer-Policy`, `Permissions-Policy`, and `X-XSS-Protection: 0`.
+**Headers** — Content-Security-Policy (report-only by default), `X-Frame-Options` kept consistent with the CSP `frame-ancestors` directive, `X-Content-Type-Options: nosniff` to lock file types, `Referrer-Policy`, `Permissions-Policy` (`camera`, `microphone` and `geolocation` off by default — `payment` is left alone, because `payment=()` breaks Apple Pay, Google Pay and Stripe's express checkout), and `X-XSS-Protection: 0`.
 
 **Email** — the exact SPF and DMARC TXT records for your domain, written for the provider the MX record points at, with the responsible progression built in: `~all` before `-all`, `p=none` before `quarantine` and `reject`.
 
@@ -58,11 +58,13 @@ The CSP preset matters more than the switches, so it is spelled out on screen:
 
 | Preset | Policy | Can it break a page? |
 |---|---|---|
-| **Safe** (default) | `frame-ancestors`, `base-uri`, `object-src 'none'`, `form-action` | **No.** It says nothing about scripts or styles. |
-| **Strict** | `default-src 'self'` and everything down from it | Yes — every inline script and style. Keep it in report-only until the console is clean. |
+| **Safe** (default) | `frame-ancestors`, `base-uri` | **No.** It says nothing about scripts, styles, plugins or forms. |
+| **Strict** | `default-src 'self'` and everything down from it, including `object-src 'none'` and `form-action 'self'` | Yes — every inline script and style. Keep it in report-only until the console is clean. |
 | **Custom** | Your own line | Depends on what you write. |
 
-`Safe` deliberately omits `default-src`: that directive is the fallback for `script-src`, so adding it would block the inline scripts of the theme and every other plugin. Framing, base-tag injection and plugin embedding are closed anyway — the part that cannot break a page.
+`Safe` deliberately omits `default-src`: that directive is the fallback for `script-src`, so adding it would block the inline scripts of the theme and every other plugin. It also leaves out `object-src 'none'`, which stops `<embed>` and `<object>` from loading a PDF, and `form-action 'self'`, which stops a checkout page from posting to a payment gateway. Framing and base-tag injection — the parts that cannot break a page — are closed anyway.
+
+A CSP that is set to report-only is reported as **to review**, never as a pass: nothing is blocked until the mode is changed, and the audit says so in the evidence column.
 
 ## The safety model
 
@@ -88,7 +90,7 @@ Click a panel for the full-size view. Five tabs: **Overview**, **HTTPS**, **Head
 
 ## Install
 
-1. Download `Bastion-1.0.0.zip` from [Releases](https://github.com/zigmoon/bastion/releases).
+1. Download `Bastion-1.1.0.zip` from [Releases](https://github.com/zigmoon/bastion/releases).
 2. **Plugins → Add New → Upload Plugin**, install, activate.
 3. **Settings → Bastion**: press **Run the audit**, read the report.
 4. Fix what you can at the server level first. Then switch to **Apply** and turn on what you need, one group at a time.
@@ -106,7 +108,7 @@ Click a panel for the full-size view. Five tabs: **Overview**, **HTTPS**, **Head
 
 | | |
 |---|---|
-| WordPress | 6.5 → 7.1 (latest stable at the time of writing: 7.1.3) |
+| WordPress | 6.5 → 7.1 (latest stable at the time of writing: 7.1.4) |
 | PHP | 8.2 → 8.5 |
 | Database | No table created; `wp_options` and two transients |
 | Multisite | Yes, settings per site |
@@ -130,9 +132,9 @@ pwsh -File tools/release.ps1 -Bump patch
 
 ## Quality
 
-- **205 automated assertions.** Two suites, no WordPress installation needed: `162 passed, 0 failed` and `43 passed, 0 failed`.
-- **Checked on a real install.** WordPress 7.1.3 / PHP 8.3: headers read back with `curl -I`, `?ver=` inspected on the rendered page, `readme.html` probed, `debug.log` left clean, audit run from the dashboard and from WP-CLI.
-- **Two bugs found by its own tests** during development: the audit read WordPress's header dictionary with an array cast (every header check reported "absent"), and it probed `https://` on an `http://` install (every check reported "unreachable"). Both are now covered by assertions.
+- **226 automated assertions.** Two suites, no WordPress installation needed: `183 passed, 0 failed` and `43 passed, 0 failed`.
+- **Checked on real installs.** WordPress 7.1.4 on PHP 8.3: headers read back with `curl -I`, `?ver=` inspected on the rendered page, `readme.html` probed, `wp-login.php` probed for its redirect, `debug.log` left clean, audit run from the dashboard and from WP-CLI. Linted and tested on **PHP 8.2, 8.3, 8.4 and 8.5** with `E_ALL` — no notice, no deprecation.
+- **Bugs found by its own tests and by that install**: the audit read WordPress's header dictionary with an array cast, so every header check reported "absent"; it probed `https://` on an `http://` install, so every check reported "unreachable"; the redirect skipped `wp-login.php`, because that file never fires `template_redirect`; and the redirect dropped a non-standard port. Each one is now covered by an assertion.
 - English source strings, complete French and Spanish translations, `.pot` catalogue.
 
 ## Credits

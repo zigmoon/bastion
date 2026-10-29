@@ -158,20 +158,72 @@ bas_same( 'same-origin', $coop['Cross-Origin-Opener-Policy'] ?? '', 'COOP is sen
 $no_perms = Headers::build( bas_settings( array( 'permissions_policy' => '' ) ), true );
 bas_assert( ! isset( $no_perms['Permissions-Policy'] ), 'an empty permissions policy sends nothing' );
 
+// The default must not block a payment button.
+$default_perms = (string) Settings::defaults()['permissions_policy'];
+bas_assert( ! str_contains( $default_perms, 'payment=' ), 'the default permissions policy leaves the Payment Request API alone' );
+bas_assert( str_contains( $default_perms, 'camera=()' ), 'but does disable the camera' );
+
+/* -------------------------------------------------------------------------
+ * Behind a TLS-terminating proxy: HSTS must still be sent.
+ * ---------------------------------------------------------------------- */
+
+$_SERVER = array(
+	'REQUEST_METHOD'           => 'GET',
+	'HTTP_HOST'                => 'example.test',
+	'REQUEST_URI'              => '/',
+	'REMOTE_ADDR'              => '10.0.0.5',
+	'HTTP_X_FORWARDED_PROTO'   => 'https',
+);
+
+$behind_proxy = bas_settings(
+	array(
+		'headers_enabled' => true,
+		'hsts'            => true,
+		'trust_proxy'     => true,
+		'trusted_proxies' => '10.0.0.0/8',
+	)
+);
+
+$map = ( new Headers( $behind_proxy ) )->response_headers();
+bas_assert( isset( $map['Strict-Transport-Security'] ), 'HSTS is sent when a trusted proxy terminates TLS' );
+
+$stranger = bas_settings(
+	array(
+		'headers_enabled' => true,
+		'hsts'            => true,
+		'trust_proxy'     => true,
+		'trusted_proxies' => '10.0.0.0/8',
+	)
+);
+$_SERVER['REMOTE_ADDR'] = '203.0.113.9';
+$map = ( new Headers( $stranger ) )->response_headers();
+bas_assert( ! isset( $map['Strict-Transport-Security'] ), 'and never when the peer is not a declared proxy' );
+
+// Removing X-Powered-By is a disclosure: it must not need the header switch.
+$disclosure_only = bas_settings( array( 'headers_enabled' => false, 'remove_powered_by' => true ) );
+bas_assert( ! $disclosure_only->active( 'headers_enabled' ), 'the header switch is off' );
+bas_assert( $disclosure_only->active( 'remove_powered_by' ), 'yet the version can still be hidden on its own' );
+bas_same( array(), ( new Headers( $disclosure_only ) )->response_headers(), 'and no header is published for it' );
+
+$_SERVER = array();
+
 /* -------------------------------------------------------------------------
  * CSP.
  * ---------------------------------------------------------------------- */
 
 $safe = Headers::csp( bas_settings() );
 bas_assert( str_contains( $safe, "frame-ancestors 'self'" ), 'the safe policy closes framing' );
-bas_assert( str_contains( $safe, "object-src 'none'" ), 'the safe policy refuses plugins' );
 bas_assert( str_contains( $safe, "base-uri 'self'" ), 'the safe policy blocks base-tag injection' );
 bas_assert( ! str_contains( $safe, 'default-src' ), 'the safe policy says nothing about scripts: that is what makes it enforceable' );
 bas_assert( ! str_contains( $safe, 'script-src' ), 'and nothing about script-src either' );
+bas_assert( ! str_contains( $safe, 'object-src' ), 'the safe policy leaves <object> and <embed> alone: they show PDFs' );
+bas_assert( ! str_contains( $safe, 'form-action' ), 'and leaves form targets alone: they post to payment gateways' );
 
 $strict = Headers::csp( bas_settings( array( 'csp_preset' => 'strict' ) ) );
 bas_assert( str_contains( $strict, "default-src 'self'" ), 'the strict policy falls back to the same origin' );
 bas_assert( str_contains( $strict, 'upgrade-insecure-requests' ), 'the strict policy upgrades mixed content' );
+bas_assert( str_contains( $strict, "object-src 'none'" ), 'the strict policy does refuse plugins' );
+bas_assert( str_contains( $strict, "form-action 'self'" ), 'and does restrict form targets' );
 
 $report = bas_settings( array( 'csp_report_uri' => 'https://example.test/csp' ) );
 bas_assert( str_contains( Headers::csp( $report ), 'report-uri https://example.test/csp' ), 'the report endpoint is appended' );
@@ -196,6 +248,8 @@ bas_assert( ! isset( $headers_off['Content-Security-Policy'] ) && ! isset( $head
 bas_same( 'https://example.test/atelier?a=1', Https::https_url( 'http://example.test/atelier?a=1', 'https://example.test' ), 'the query string survives the rewrite' );
 bas_same( null, Https::https_url( 'http://evil.test/atelier', 'https://example.test' ), 'a request for another host is never redirected' );
 bas_same( null, Https::https_url( 'http://example.test', '' ), 'a URL without a path is left alone' );
+bas_same( 'https://example.test:8443/atelier', Https::https_url( 'http://example.test:8443/atelier', 'http://example.test:8443' ), 'a site on a non-standard port keeps it: 443 would answer nothing' );
+bas_same( 'https://example.test/atelier', Https::https_url( 'http://example.test:80/atelier', 'http://example.test' ), 'port 80 is dropped, because HTTPS listens on 443' );
 
 bas_assert( Https::in_range( '10.1.2.3', '10.0.0.0/8' ), 'an address inside its CIDR is recognised' );
 bas_assert( ! Https::in_range( '11.1.2.3', '10.0.0.0/8' ), 'an address outside is not' );
@@ -355,11 +409,15 @@ bas_assert( str_contains( Audit::generator_of( '<meta name="generator" content="
 $mixed = Audit::plaintext_assets(
 	'<img src="http://cdn.test/a.png"><script src="https://ok.test/b.js"></script>'
 	. '<div style="background:url(http://bg.test/c.png)"></div>'
+	. '<link rel="alternate" type="application/rss+xml" href="http://alt.test/feed">'
+	. '<link rel="stylesheet" href="http://css.test/a.css">'
 	. '<p>see http://not-a-resource.test/ for details</p>'
 );
-bas_same( 2, count( $mixed ), 'only resources are counted: an http:// URL in the text is not mixed content' );
+bas_same( 3, count( $mixed ), 'only fetched resources are counted: text and rel=alternate links are not mixed content' );
 bas_assert( in_array( 'http://cdn.test/a.png', $mixed, true ), 'the image is caught' );
 bas_assert( in_array( 'http://bg.test/c.png', $mixed, true ), 'the inline CSS url is caught' );
+bas_assert( in_array( 'http://css.test/a.css', $mixed, true ), 'a stylesheet over http is caught' );
+bas_assert( ! in_array( 'http://alt.test/feed', $mixed, true ), 'an http:// feed link is not' );
 
 bas_same( '', Audit::version_query( '<link href="https://x.test/a.css?ver=hash123">' ), 'a content hash is not a version' );
 bas_assert( str_contains( Audit::version_query( '<link href="https://x.test/a.css?ver=7.1.3">' ), '7.1.3' ), 'a core version is caught' );
@@ -384,8 +442,9 @@ bas_same( array(), Audit::normalise_headers( null ), 'a missing header block is 
 
 $stub_pages = static function ( array $overrides = array() ): void {
 	$defaults = array(
-		'https://example.test'      => array( 'response' => array( 'code' => 200 ), 'headers' => array(), 'body' => '<html></html>' ),
-		'http://example.test'       => array( 'response' => array( 'code' => 200 ), 'headers' => array(), 'body' => '' ),
+		'https://example.test'             => array( 'response' => array( 'code' => 200 ), 'headers' => array(), 'body' => '<html></html>' ),
+		'http://example.test'              => array( 'response' => array( 'code' => 200 ), 'headers' => array(), 'body' => '' ),
+		'http://example.test/wp-login.php' => array( 'response' => array( 'code' => 200 ), 'headers' => array(), 'body' => '' ),
 		'https://example.test/readme.html' => array( 'response' => array( 'code' => 200 ), 'headers' => array(), 'body' => '' ),
 	);
 
@@ -409,6 +468,7 @@ foreach ( $bad as $rows ) {
 
 bas_same( Audit::FAIL, $statuses['hsts'], 'a bare response fails the HSTS check' );
 bas_same( Audit::FAIL, $statuses['http_redirect'], 'and the redirect check: plain HTTP answered 200' );
+bas_same( Audit::FAIL, $statuses['login_redirect'], 'and the login screen check: wp-login.php answered 200 in clear text' );
 bas_same( Audit::FAIL, $statuses['csp'], 'and the CSP check' );
 bas_same( Audit::FAIL, $statuses['nosniff'], 'and nosniff' );
 bas_same( Audit::FAIL, $statuses['readme'], 'a served readme.html is a failure' );
@@ -429,6 +489,7 @@ $stub_pages(
 	array(
 		'https://example.test'             => array( 'response' => array( 'code' => 200 ), 'headers' => $good_headers, 'body' => '<html><head></head><body></body></html>' ),
 		'http://example.test'              => array( 'response' => array( 'code' => 301 ), 'headers' => array( 'location' => 'https://example.test/' ), 'body' => '' ),
+		'http://example.test/wp-login.php' => array( 'response' => array( 'code' => 301 ), 'headers' => array( 'location' => 'https://example.test/wp-login.php' ), 'body' => '' ),
 		'https://example.test/readme.html' => array( 'response' => array( 'code' => 404 ), 'headers' => array(), 'body' => '' ),
 	)
 );
@@ -445,13 +506,70 @@ foreach ( $good as $rows ) {
 	}
 }
 
-foreach ( array( 'home_https', 'https_reachable', 'http_redirect', 'hsts', 'csp', 'xfo', 'nosniff', 'referrer', 'permissions', 'generator', 'mixed', 'readme', 'spf', 'dmarc' ) as $id ) {
+foreach ( array( 'home_https', 'https_reachable', 'http_redirect', 'login_redirect', 'hsts', 'csp', 'xfo', 'nosniff', 'referrer', 'permissions', 'generator', 'mixed', 'readme', 'spf', 'dmarc' ) as $id ) {
 	bas_same( Audit::PASS, $green[ $id ] ?? 'missing', 'the clean site passes: ' . $id );
 }
 
 $tally = Audit::tally( $good );
 bas_same( 0, $tally[ Audit::FAIL ], 'a clean site has no failure' );
 bas_assert( $tally[ Audit::PASS ] >= 14, 'and a good number of passes' );
+
+// A report-only policy blocks nothing: it must not be reported as a pass.
+$report_only_headers = $good_headers;
+unset( $report_only_headers['content-security-policy'] );
+$report_only_headers['content-security-policy-report-only'] = "frame-ancestors 'self'; base-uri 'self'";
+
+$report_only_settings = bas_settings( array( 'mail_domain' => 'example.test' ) );
+$stub_pages(
+	array(
+		'https://example.test'             => array( 'response' => array( 'code' => 200 ), 'headers' => $report_only_headers, 'body' => '<html><body></body></html>' ),
+		'http://example.test'              => array( 'response' => array( 'code' => 301 ), 'headers' => array( 'location' => 'https://example.test/' ), 'body' => '' ),
+		'https://example.test/readme.html' => array( 'response' => array( 'code' => 404 ), 'headers' => array(), 'body' => '' ),
+	)
+);
+set_site_transient( 'bastion_dns_' . md5( 'example.test|TXT' ), array( 'v=spf1 -all' ) );
+set_site_transient( 'bastion_dns_' . md5( '_dmarc.example.test|TXT' ), array( 'v=DMARC1; p=reject' ) );
+delete_site_transient( Audit::CACHE );
+
+$reporting = ( new Audit( $report_only_settings ) )->run( true );
+$csp_status = '';
+
+foreach ( $reporting['headers'] as $row ) {
+	if ( 'csp' === $row['id'] ) {
+		$csp_status = $row['status'];
+	}
+}
+
+bas_same( Audit::WARN, $csp_status, 'a report-only policy is a warning, never a pass' );
+
+// Mixed content cannot exist on a site that is not even on HTTPS.
+$GLOBALS['bas_home']    = 'http://example.test';
+$GLOBALS['bas_siteurl'] = 'http://example.test';
+delete_site_transient( Audit::CACHE );
+
+$plain_settings = bas_settings( array( 'mail_domain' => '' ) );
+$GLOBALS['bas_home']    = 'http://example.test';
+$GLOBALS['bas_siteurl'] = 'http://example.test';
+
+$GLOBALS['bas_http'] = array(
+	'http://example.test'              => array( 'response' => array( 'code' => 200 ), 'headers' => $good_headers, 'body' => '<html><body><img src="http://example.test/a.png"></body></html>' ),
+	'https://example.test'             => new WP_Error( 'http_request_failed', 'no TLS here' ),
+	'http://example.test/readme.html'  => array( 'response' => array( 'code' => 404 ), 'headers' => array(), 'body' => '' ),
+);
+
+$plain      = ( new Audit( $plain_settings ) )->run( true );
+$mixed_status = '';
+
+foreach ( $plain['disclosure'] as $row ) {
+	if ( 'mixed' === $row['id'] ) {
+		$mixed_status = $row['status'];
+	}
+}
+
+bas_same( Audit::WARN, $mixed_status, 'mixed content is not a failure on a site that is served over HTTP' );
+
+$GLOBALS['bas_home']    = 'https://example.test';
+$GLOBALS['bas_siteurl'] = 'https://example.test';
 
 // The probe is cached: a second run must not fetch again.
 $calls = count( $GLOBALS['bas_http_calls'] );
@@ -495,6 +613,16 @@ $logs = $logger->logs();
 bas_same( 1, count( $logs ), 'the event is recorded' );
 bas_same( 'https_redirect_test', $logs[0]['event'] ?? '', 'with its name' );
 bas_assert( ! isset( $logs[0]['ip'] ), 'and no visitor address: a security plugin must not become a privacy problem' );
+
+// A redirect event fires on every request: one row a minute is enough.
+$logger->log( 'https_redirect_test', 'https://example.test/atelier' );
+bas_same( 1, count( $logger->logs() ), 'a repeated redirect event is throttled: no database write per page view' );
+
+$logger->log( 'https_redirect_test', 'https://example.test/autre' );
+bas_same( 2, count( $logger->logs() ), 'but a different URL is still recorded' );
+
+$logger->log( 'settings_saved', 'audit → apply' );
+bas_same( 3, count( $logger->logs() ), 'an ordinary event is never throttled' );
 
 for ( $i = 0; $i < 40; $i++ ) {
 	$logger->log( 'filler_' . $i );
