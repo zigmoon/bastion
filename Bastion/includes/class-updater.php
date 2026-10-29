@@ -97,6 +97,15 @@ final class Updater {
 			return $update;
 		}
 
+		// The installed version is the one WordPress read from the headers. A
+		// release that is not strictly newer is not an update: offering it puts
+		// an "update available" badge on a plugin that is already current, and
+		// reinstalling the same version is how a site gets rolled back by
+		// accident.
+		if ( version_compare( $release['version'], (string) ( $plugin_data['Version'] ?? '' ), '<=' ) ) {
+			return $update;
+		}
+
 		// `tested` and `requires_php` come from the headers WordPress already
 		// read, so the plugin never states them twice.
 		return array(

@@ -692,6 +692,35 @@ bas_same( null, Updater::parse_release( array( 'assets' => $assets ) ), 'and a p
 
 bas_same( '<p>&lt;img src=x onerror=alert(1)&gt;</p>', Updater::changelog_markup( '<img src=x onerror=alert(1)>' ), 'a release body is escaped, not rendered' );
 
+// The whole path, against a stubbed api.github.com.
+bas_reset_state();
+$GLOBALS['bas_options']['bastion_settings'] = array_merge( Settings::defaults(), array( 'mode' => 'apply', 'check_updates' => true ) );
+$GLOBALS['bas_http'] = array(
+	'https://api.github.com/repos/zigmoon/bastion/releases/latest' => array(
+		'response' => array( 'code' => 200 ),
+		'headers'  => array(),
+		'body'     => (string) wp_json_encode(
+			array(
+				'tag_name' => 'v9.9.9',
+				'html_url' => 'https://github.com/zigmoon/bastion/releases/tag/v9.9.9',
+				'body'     => 'A newer release.',
+				'assets'   => array( array( 'name' => 'Bastion-9.9.9.zip', 'browser_download_url' => 'https://example.test/999.zip' ) ),
+			)
+		),
+	),
+);
+
+$live = new Updater( new Settings() );
+
+bas_same( '9.9.9', $live->inject( false, array( 'Version' => '1.1.1', 'Name' => 'Bastion' ), 'Bastion/bastion.php' )['version'] ?? '', 'an older install is offered the newer release' );
+bas_same( false, $live->inject( false, array( 'Version' => '9.9.9' ), 'Bastion/bastion.php' ), 'a current install is offered nothing' );
+bas_same( false, $live->inject( false, array( 'Version' => '10.0.0' ), 'Bastion/bastion.php' ), 'and neither is a newer one' );
+bas_same( false, $live->inject( false, array( 'Version' => '1.1.1' ), 'other/other.php' ), 'another plugin is never answered for' );
+
+$muted = array_merge( Settings::defaults(), array( 'mode' => 'apply', 'check_updates' => false ) );
+$GLOBALS['bas_options']['bastion_settings'] = $muted;
+bas_same( false, ( new Updater( new Settings() ) )->inject( false, array( 'Version' => '1.0.0' ), 'Bastion/bastion.php' ), 'the check-updates switch answers nothing at all' );
+
 /* -------------------------------------------------------------------------
  * Report.
  * ---------------------------------------------------------------------- */

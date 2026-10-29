@@ -4,6 +4,13 @@ All notable changes to Bastion are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [semantic versioning](https://semver.org/).
 
+## [1.1.2] — 2026-10-29
+
+### Fixed
+
+- **The updater answered for a release that was not newer.** WordPress puts whatever the `update_plugins_github.com` filter returns into the update list, so returning the latest release unconditionally could badge a plugin that was already current — and reinstalling the same version is how a site gets rolled back by accident. The answer is now gated on `version_compare`, and there is a test for the equal and the newer case.
+- Five assertions added, 254 in total.
+
 ## [1.1.1] — 2026-10-29
 
 ### Fixed
@@ -69,6 +76,7 @@ First release.
 - The audit probed `https://` on an install that serves `http://`, so on such a site every check reported "unreachable". It now measures the URL the site actually serves, and probes TLS separately.
 - A check that could not run — site unreachable, DNS unavailable — was reported as a pass for the disclosure group. It is now a warning, so nothing turns green by default.
 
+[1.1.2]: https://github.com/zigmoon/bastion/releases/tag/v1.1.2
 [1.1.1]: https://github.com/zigmoon/bastion/releases/tag/v1.1.1
 [1.1.0]: https://github.com/zigmoon/bastion/releases/tag/v1.1.0
 [1.0.0]: https://github.com/zigmoon/bastion/releases/tag/v1.0.0

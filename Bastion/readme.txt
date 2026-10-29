@@ -4,7 +4,7 @@ Tags: security, https, hsts, security headers, csp, dmarc
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,7 +33,7 @@ Bastion hardens a WordPress site without ever surprising it. It ships in **audit
 * Strictly escaped output, validated input, capability checks and nonces on every admin action.
 * A newline in any header value is removed in sanitisation, never at send time.
 * Small, single-responsibility classes: settings, headers, https, disclosure, DNS, audit, admin, CLI.
-* 249 automated assertions ship in the `tests/` directory (unit tests plus a boot/render smoke test).
+* 254 automated assertions ship in the `tests/` directory (unit tests plus a boot/render smoke test).
 * English source strings, complete French and Spanish translations, `.pot` catalogue.
 * Writes no file. Creates no table. `define( 'BASTION_DISABLED', true );` stops everything in memory.
 
@@ -106,6 +106,9 @@ PHP 8.2 to 8.5, and WordPress 6.5 to 7.1.
 
 == Changelog ==
 
+= 1.1.2 =
+* The updater no longer offers a release that is not strictly newer than the installed version.
+
 = 1.1.1 =
 * The changelog in the "View details" modal is written in the plugin's own typography instead of raw Markdown: headings, bold, inline code and lists are converted, and everything is escaped.
 * The self-updater is now covered by the test suite: version tags, asset selection, drafts and pre-releases, and the changelog conversion. 249 assertions.
@@ -134,6 +137,9 @@ PHP 8.2 to 8.5, and WordPress 6.5 to 7.1.
 * 205 assertions.
 
 == Upgrade Notice ==
+
+= 1.1.2 =
+The update check no longer badges a plugin that is already current.
 
 = 1.1.1 =
 The changelog in the update modal now renders as typography instead of raw Markdown. No behaviour change on the site itself.
