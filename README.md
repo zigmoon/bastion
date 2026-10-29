@@ -20,8 +20,8 @@
 <p align="center">
   <img alt="WordPress 6.5 to 7.1" src="https://img.shields.io/badge/WordPress-6.5%20%E2%86%92%207.1-0b0d10?style=flat-square">
   <img alt="PHP 8.2 to 8.5" src="https://img.shields.io/badge/PHP-8.2%20%E2%86%92%208.5-0b0d10?style=flat-square">
-  <img alt="version 1.1.3" src="https://img.shields.io/badge/version-1.1.3-0a66ff?style=flat-square">
-  <img alt="254 assertions" src="https://img.shields.io/badge/tests-254%20assertions-0b0d10?style=flat-square">
+  <img alt="version 1.1.4" src="https://img.shields.io/badge/version-1.1.4-0a66ff?style=flat-square">
+  <img alt="270 assertions" src="https://img.shields.io/badge/tests-270%20assertions-0b0d10?style=flat-square">
   <img alt="Licence GPL-2.0-or-later" src="https://img.shields.io/badge/licence-GPL--2.0--or--later-0b0d10?style=flat-square">
 </p>
 
@@ -90,7 +90,7 @@ Click a panel for the full-size view. Five tabs: **Overview**, **HTTPS**, **Head
 
 ## Install
 
-1. Download `Bastion-1.1.3.zip` from [Releases](https://github.com/zigmoon/bastion/releases).
+1. Download `Bastion-1.1.4.zip` from [Releases](https://github.com/zigmoon/bastion/releases).
 2. **Plugins → Add New → Upload Plugin**, install, activate.
 3. **Settings → Bastion**: press **Run the audit**, read the report.
 4. Fix what you can at the server level first. Then switch to **Apply** and turn on what you need, one group at a time.
@@ -132,7 +132,7 @@ pwsh -File tools/release.ps1 -Bump patch
 
 ## Quality
 
-- **254 automated assertions.** Two suites, no WordPress installation needed: `211 passed, 0 failed` and `43 passed, 0 failed`.
+- **270 automated assertions.** Two suites, no WordPress installation needed: `227 passed, 0 failed` and `43 passed, 0 failed`.
 - **Checked on real installs.** WordPress 7.1.4 on PHP 8.3: headers read back with `curl -I`, `?ver=` inspected on the rendered page, `readme.html` probed, `wp-login.php` probed for its redirect, `debug.log` left clean, audit run from the dashboard and from WP-CLI. Linted and tested on **PHP 8.2, 8.3, 8.4 and 8.5** with `E_ALL` — no notice, no deprecation.
 - **Bugs found by its own tests and by that install**: the audit read WordPress's header dictionary with an array cast, so every header check reported "absent"; it probed `https://` on an `http://` install, so every check reported "unreachable"; the redirect skipped `wp-login.php`, because that file never fires `template_redirect`; and the redirect dropped a non-standard port. Each one is now covered by an assertion.
 - English source strings, complete French and Spanish translations, `.pot` catalogue.

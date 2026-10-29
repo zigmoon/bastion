@@ -115,11 +115,7 @@ final class Updater {
 			'package'        => $release['package'],
 			'tested'         => (string) ( $plugin_data['Tested up to'] ?? '' ),
 			'requires_php'   => (string) ( $plugin_data['Requires PHP'] ?? '' ),
-			'icons'          => array(
-				'1x'  => 'https://raw.githubusercontent.com/' . self::REPO . '/main/assets/icon-128.png',
-				'2x'  => 'https://raw.githubusercontent.com/' . self::REPO . '/main/assets/icon-256.png',
-				'svg' => 'https://raw.githubusercontent.com/' . self::REPO . '/main/assets/icon.svg',
-			),
+			'icons'          => self::icons(),
 			'upgrade_notice' => $release['notice'],
 		);
 	}
@@ -148,22 +144,97 @@ final class Updater {
 			return $result;
 		}
 
+		$headers = self::self_headers();
+
 		return (object) array(
-			'name'          => 'Bastion',
+			'name'          => '' !== $headers['name'] ? $headers['name'] : 'Bastion',
 			'slug'          => self::SLUG,
 			'version'       => $release['version'],
-			'author'        => '<a href="https://zigmoon.com/">zigmoon</a>',
-			'homepage'      => 'https://github.com/' . self::REPO,
+			'author'        => self::author_markup( $headers ),
+			'homepage'      => '' !== $headers['uri'] ? $headers['uri'] : 'https://github.com/' . self::REPO,
 			'download_link' => $release['package'],
-			'requires'      => '6.5',
-			'tested'        => '7.1',
-			'requires_php'  => '8.2',
+			'requires'      => $headers['requires'],
+			'tested'        => $headers['tested'],
+			'requires_php'  => $headers['requires_php'],
 			'last_updated'  => $release['date'],
+			// The plugins list never shows an icon, so the modal is the one
+			// place a visitor sees what they are installing. Without this key
+			// WordPress renders a blank square.
+			'icons'         => self::icons(),
 			'sections'      => array(
 				'description' => '<p>' . esc_html__( 'Forces HTTPS, sets the security headers, closes the version leaks and audits the result on the live site — with nothing applied until you ask.', 'bastion' ) . '</p>',
 				'changelog'   => $release['changelog'],
 			),
 		);
+	}
+
+	/**
+	 * The icon URLs, served from the repository rather than bundled: the update
+	 * modal is answering for a plugin the directory does not host, so there is
+	 * nothing else to resolve them against.
+	 *
+	 * @return array<string, string>
+	 */
+	public static function icons(): array {
+		return array(
+			'1x'  => 'https://raw.githubusercontent.com/' . self::REPO . '/main/assets/icon-128.png',
+			'2x'  => 'https://raw.githubusercontent.com/' . self::REPO . '/main/assets/icon-256.png',
+			'svg' => 'https://raw.githubusercontent.com/' . self::REPO . '/main/assets/icon.svg',
+		);
+	}
+
+	/**
+	 * The plugin's own header, read once.
+	 *
+	 * `Requires`, `Tested up to` and `Requires PHP` are stated in the header
+	 * already. Writing them a second time here is how a release ships a modal
+	 * that claims to be tested up to a version nobody tested — and WordPress
+	 * turns a `tested` below the running version into a warning on the screen.
+	 *
+	 * @return array<string, string>
+	 */
+	public static function self_headers(): array {
+		static $headers = null;
+
+		if ( is_array( $headers ) ) {
+			return $headers;
+		}
+
+		$file = defined( 'BASTION_FILE' ) ? (string) constant( 'BASTION_FILE' ) : BASTION_DIR . 'bastion.php';
+		$head = is_readable( $file ) ? (string) file_get_contents( $file, false, null, 0, 8192 ) : '';
+
+		$read = static function ( string $label ) use ( $head ): string {
+			$pattern = '/^[ \t\/*#@]*' . preg_quote( $label, '/' ) . ':\s*(.+?)\s*$/mi';
+
+			return preg_match( $pattern, $head, $match ) ? trim( (string) $match[1] ) : '';
+		};
+
+		$headers = array(
+			'name'         => $read( 'Plugin Name' ),
+			'uri'          => $read( 'Plugin URI' ),
+			'author'       => $read( 'Author' ),
+			'author_uri'   => $read( 'Author URI' ),
+			'requires'     => $read( 'Requires at least' ),
+			'tested'       => $read( 'Tested up to' ),
+			'requires_php' => $read( 'Requires PHP' ),
+		);
+
+		return $headers;
+	}
+
+	/**
+	 * The author line, linked when the header gives a URI.
+	 *
+	 * @param array<string, string> $headers Plugin headers.
+	 */
+	private static function author_markup( array $headers ): string {
+		$name = '' !== $headers['author'] ? $headers['author'] : 'zigmoon';
+
+		if ( '' === $headers['author_uri'] ) {
+			return esc_html( $name );
+		}
+
+		return '<a href="' . esc_url( $headers['author_uri'] ) . '">' . esc_html( $name ) . '</a>';
 	}
 
 	/**

@@ -4,6 +4,19 @@ All notable changes to Bastion are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [semantic versioning](https://semver.org/).
 
+## [1.1.4] — 2026-10-29
+
+### Fixed
+
+- **The update modal could take the whole site down.** `details()` read a `$headers` variable that was never assigned, so opening "View version … details" on a site with an available update raised `Undefined variable $headers` and then a fatal `TypeError`. Found by opening the modal on a real install, not by the test suite — which is why there is now a test that calls `details()` and checks the object it returns.
+- **The modal's facts were copies.** `requires`, `tested` and `requires_php` were written by hand in the class, next to the same values in the plugin header. `tested` said `7.1` while the plugin was being tested on `7.1.4`, and WordPress turns a `tested` below the running version into *"This plugin has not been tested with your current version of WordPress"* on the screen. All three now come from the header, read once, and the header says `7.1.4`.
+- **The icon was never sent to the modal.** `details()` had no `icons` key, so WordPress had nothing to resolve. Both answers now share one `Updater::icons()`, which is also where the three URLs live instead of being repeated.
+
+### Added
+
+- `Updater::self_headers()`, `Updater::icons()` and the author line built from `Author` and `Author URI` instead of a hardcoded link.
+- 16 assertions covering the header parsing and the modal response, including the fatal this release fixes. 270 in total.
+
 ## [1.1.3] — 2026-10-29
 
 ### Changed
@@ -83,6 +96,7 @@ First release.
 - The audit probed `https://` on an install that serves `http://`, so on such a site every check reported "unreachable". It now measures the URL the site actually serves, and probes TLS separately.
 - A check that could not run — site unreachable, DNS unavailable — was reported as a pass for the disclosure group. It is now a warning, so nothing turns green by default.
 
+[1.1.4]: https://github.com/zigmoon/bastion/releases/tag/v1.1.4
 [1.1.3]: https://github.com/zigmoon/bastion/releases/tag/v1.1.3
 [1.1.2]: https://github.com/zigmoon/bastion/releases/tag/v1.1.2
 [1.1.1]: https://github.com/zigmoon/bastion/releases/tag/v1.1.1

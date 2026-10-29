@@ -692,6 +692,52 @@ bas_same( null, Updater::parse_release( array( 'assets' => $assets ) ), 'and a p
 
 bas_same( '<p>&lt;img src=x onerror=alert(1)&gt;</p>', Updater::changelog_markup( '<img src=x onerror=alert(1)>' ), 'a release body is escaped, not rendered' );
 
+// The modal's facts come from the plugin header, not from a copy kept in the
+// class: a `tested` that has drifted below the running version is a warning on
+// the screen, and a missing `icons` key is a blank square.
+$headers = Updater::self_headers();
+
+bas_same( 'Bastion', $headers['name'], 'the name is read from the header' );
+bas_same( 'https://github.com/zigmoon/bastion', $headers['uri'], 'so is the plugin URI' );
+bas_assert( '7.1' !== $headers['tested'] && '' !== $headers['tested'], 'the tested version is the one in the header, patch number included' );
+bas_same( '8.2', $headers['requires_php'], 'and the PHP floor' );
+bas_same( '6.5', $headers['requires'], 'and the WordPress floor' );
+
+$icons = Updater::icons();
+bas_assert( isset( $icons['1x'], $icons['2x'], $icons['svg'] ), 'the modal is given all three icon variants' );
+bas_assert( false !== strpos( $icons['1x'], 'raw.githubusercontent.com' ), 'served from the repository, since the directory does not host the plugin' );
+bas_assert( false !== strpos( $icons['2x'], 'icon-256.png' ), 'the 2x variant is the 256 px file' );
+
+// The modal itself: a response with a missing key is a blank square, and a
+// response that throws is a critical error on the screen instead of a dialog.
+bas_reset_state();
+$GLOBALS['bas_options']['bastion_settings'] = array_merge( Settings::defaults(), array( 'mode' => 'apply', 'check_updates' => true ) );
+$GLOBALS['bas_http'] = array(
+	'https://api.github.com/repos/zigmoon/bastion/releases/latest' => array(
+		'response' => array( 'code' => 200 ),
+		'headers'  => array(),
+		'body'     => (string) wp_json_encode(
+			array(
+				'tag_name' => 'v9.9.9',
+				'html_url' => 'https://github.com/zigmoon/bastion/releases/tag/v9.9.9',
+				'body'     => '## [9.9.9] — 2026-10-29' . "\n\nA newer release.\n",
+				'assets'   => array( array( 'name' => 'Bastion-9.9.9.zip', 'browser_download_url' => 'https://example.test/999.zip' ) ),
+			)
+		),
+	),
+);
+
+$modal = ( new Updater( new Settings() ) )->details( false, 'plugin_information', (object) array( 'slug' => 'bastion' ) );
+
+bas_assert( is_object( $modal ), 'the modal answers for this plugin' );
+bas_same( '9.9.9', $modal->version ?? '', 'with the release version' );
+bas_same( 'Bastion', $modal->name ?? '', 'the name from the header' );
+bas_same( '7.1.4', $modal->tested ?? '', 'and a tested version that matches the header, so WordPress does not warn' );
+bas_assert( isset( $modal->icons['2x'] ), 'the icon is in the answer: without it the modal shows a blank square' );
+bas_assert( str_contains( (string) ( $modal->author ?? '' ), 'github.com/zigmoon' ), 'the author line links to the URI in the header' );
+bas_assert( str_contains( (string) ( $modal->sections['changelog'] ?? '' ), '<p>' ), 'the changelog is HTML, not raw Markdown' );
+bas_same( false, ( new Updater( new Settings() ) )->details( false, 'plugin_information', (object) array( 'slug' => 'other' ) ), 'another plugin is never answered for' );
+
 // The whole path, against a stubbed api.github.com.
 bas_reset_state();
 $GLOBALS['bas_options']['bastion_settings'] = array_merge( Settings::defaults(), array( 'mode' => 'apply', 'check_updates' => true ) );

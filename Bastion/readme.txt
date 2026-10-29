@@ -2,9 +2,9 @@
 Contributors: zigmoon
 Tags: security, https, hsts, security headers, csp, dmarc
 Requires at least: 6.5
-Tested up to: 7.1
+Tested up to: 7.1.4
 Requires PHP: 8.2
-Stable tag: 1.1.3
+Stable tag: 1.1.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,7 +33,7 @@ Bastion hardens a WordPress site without ever surprising it. It ships in **audit
 * Strictly escaped output, validated input, capability checks and nonces on every admin action.
 * A newline in any header value is removed in sanitisation, never at send time.
 * Small, single-responsibility classes: settings, headers, https, disclosure, DNS, audit, admin, CLI.
-* 254 automated assertions ship in the `tests/` directory (unit tests plus a boot/render smoke test).
+* 270 automated assertions ship in the `tests/` directory (unit tests plus a boot/render smoke test).
 * English source strings, complete French and Spanish translations, `.pot` catalogue.
 * Writes no file. Creates no table. `define( 'BASTION_DISABLED', true );` stops everything in memory.
 
@@ -106,6 +106,11 @@ PHP 8.2 to 8.5, and WordPress 6.5 to 7.1.
 
 == Changelog ==
 
+= 1.1.4 =
+* Opening "View version details" on a site with an available update no longer raises a fatal error.
+* The update modal reads Requires, Tested up to and Requires PHP from the plugin header instead of a hand-written copy, so the "not tested with your current version" warning is gone.
+* The icon is sent with the plugin information answer, and the three URLs come from one place.
+
 = 1.1.3 =
 * A new icon: one filled gate, its opening and its crown drawn as concentric arches, so the band is the same width everywhere. A solid silhouette rather than a drawing, so it still reads at 32 px.
 
@@ -140,6 +145,9 @@ PHP 8.2 to 8.5, and WordPress 6.5 to 7.1.
 * 205 assertions.
 
 == Upgrade Notice ==
+
+= 1.1.4 =
+Fixes a fatal error when opening the update details. The tested version is now read from the header.
 
 = 1.1.3 =
 A new icon. Nothing changes on the site itself.
